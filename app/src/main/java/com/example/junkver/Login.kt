@@ -2,6 +2,7 @@ package com.example.junkver
 
 import androidx.appcompat.app.AppCompatActivity
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.MotionEvent
@@ -9,7 +10,14 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.login.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -60,11 +68,13 @@ class Login : AppCompatActivity() {
 //        }
 //        false
 //    }
+    lateinit var auth : FirebaseAuth
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        auth = FirebaseAuth.getInstance()
         setContentView(R.layout.login)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -76,10 +86,50 @@ class Login : AppCompatActivity() {
 
         fullscreenContentControls = findViewById(R.id.fullscreen_content_controls)
 
+        blogin.setOnClickListener {
+            loginUser()
+        }
+        bsignup.setOnClickListener {
+            startActivity(Intent(this, SignUp::class.java))
+//            overridePendingTransition(slide)
+
+        }
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
 //        findViewById<Button>(R.id.dummy_button).setOnTouchListener(delayHideTouchListener)
+    }
+
+    override fun onStart() {
+        super.onStart()
+//        checkLoggedInState()
+    }
+
+    private fun loginUser() {
+        val email = tvsign.text.toString()
+        val password = tvpass.text.toString()
+        if( email.isNotEmpty() && password.isNotEmpty()){
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    auth.signInWithEmailAndPassword(email,password)
+                    withContext(Dispatchers.Main){
+                        checkLoggedInState()
+                    }
+                }
+                catch (e : Exception){
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(this@Login,e.toString(), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkLoggedInState(){
+        if(auth.currentUser != null){
+            startActivity(Intent(this,Dashboard::class.java))
+
+        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

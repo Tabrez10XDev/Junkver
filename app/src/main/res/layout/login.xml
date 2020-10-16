@@ -44,13 +44,13 @@
                 android:layout_height="match_parent">
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName"
+                    android:id="@+id/tvsign"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="Username"
                     android:inputType="textPersonName"
-                    app:layout_constraintBottom_toTopOf="@+id/editTextTextPassword"
+                    app:layout_constraintBottom_toTopOf="@+id/tvpass"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.497"
                     app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +58,7 @@
                     app:layout_constraintVertical_bias="0.898" />
 
                 <EditText
-                    android:id="@+id/editTextTextPassword"
+                    android:id="@+id/tvpass"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="384dp"
@@ -71,7 +71,7 @@
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/blogin"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
@@ -80,10 +80,10 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvpass" />
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/bsignup"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="28dp"
@@ -92,7 +92,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/button" />
+                    app:layout_constraintTop_toBottomOf="@+id/blogin" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
