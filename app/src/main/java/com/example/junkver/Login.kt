@@ -2,10 +2,12 @@ package com.example.junkver
 
 import androidx.appcompat.app.AppCompatActivity
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -78,6 +80,11 @@ class Login : AppCompatActivity() {
         fullscreenContentControls = findViewById(R.id.fullscreen_content_controls)
 
         blogin.setOnClickListener {
+            val view = this.currentFocus
+            view?.let { v ->
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(v.windowToken, 0)
+            }
             loginUser()
         }
 
@@ -104,22 +111,19 @@ class Login : AppCompatActivity() {
         if( email.isNotEmpty() && password.isNotEmpty()){
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    auth.signInWithEmailAndPassword(email,password).addOnCompleteListener {
-                        if(it.isSuccessful){
-                            hidebar()
-                        }
-                        else {
+                    auth.signInWithEmailAndPassword(email,password).addOnSuccessListener {
+                        hidebar()
+                        checkLoggedInState()
+                    }.addOnFailureListener {
                             hidebar()
                             Toast.makeText(this@Login, "Invalid Credentials", Toast.LENGTH_SHORT).show()
-                        }
+
                     }.addOnCanceledListener {
                         hidebar()
                         Toast.makeText(this@Login, "Error!", Toast.LENGTH_SHORT).show()
 
                     }
-                    withContext(Dispatchers.Main){
-                        checkLoggedInState()
-                    }
+
                 }
                 catch (e : Exception){
                     withContext(Dispatchers.Main){
@@ -133,6 +137,7 @@ class Login : AppCompatActivity() {
 
     private fun checkLoggedInState(){
         if(auth.currentUser != null){
+            Toast.makeText(this@Login,"Logged in as " + auth.currentUser?.displayName, Toast.LENGTH_SHORT).show()
             startActivity(Intent(this,Dashboard::class.java))
 
         }

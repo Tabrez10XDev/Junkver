@@ -2,12 +2,14 @@ package com.example.junkver
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -70,6 +72,11 @@ class SignUp: AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         bregister.setOnClickListener {
+            val view = this.currentFocus
+            view?.let { v ->
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(v.windowToken, 0)
+            }
             registerUser()
         }
 
@@ -104,20 +111,15 @@ class SignUp: AppCompatActivity() {
         if( email.isNotEmpty() && password.isNotEmpty()){
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener {
-                        hidebar()
-                    }.addOnCanceledListener {
-                        hidebar()
-                        Toast.makeText(this@SignUp,"Error!",Toast.LENGTH_SHORT).show()
+                    auth.createUserWithEmailAndPassword(email,password).addOnSuccessListener {
+                        updateProfile()
+                        Toast.makeText(this@SignUp,"Account created",Toast.LENGTH_SHORT).show()
                     }.addOnFailureListener(){
                         Toast.makeText(this@SignUp,it.message,Toast.LENGTH_SHORT).show()
                         hidebar()
+                    }
 
-                    }
-                    withContext(Dispatchers.Main){
-//                        updateProfile()
-                        checkLoggedInState()
-                    }
+
                 }
                 catch (e : Exception){
                     withContext(Dispatchers.Main){
@@ -130,35 +132,45 @@ class SignUp: AppCompatActivity() {
     }
 
 
-    private fun updateProfile(){
+    private fun updateProfile() {
         val username = tvuserreg.text.toString()
-        auth.currentUser?.let {user->
-            val profileUpdate = UserProfileChangeRequest.Builder()
-                .setDisplayName(username)
-                .build()
-            CoroutineScope(Dispatchers.Main).launch {
-                try {
-                    user.updateProfile(profileUpdate)
-                        withContext(Dispatchers.Main){
-                            Toast.makeText(this@SignUp,"Updated username",Toast.LENGTH_SHORT).show()
+
+        if (username.isNotEmpty() && selecturi != null ){
+            auth.currentUser?.let { user ->
+                val profileUpdate = UserProfileChangeRequest.Builder()
+                    .setDisplayName(username)
+                    .setPhotoUri(selecturi)
+                    .build()
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        user.updateProfile(profileUpdate).addOnSuccessListener {
+                            hidebar()
+//                            Toast.makeText(this@SignUp, "Updated username", Toast.LENGTH_SHORT).show()
+                            checkLoggedInState()
+
+                        }.addOnFailureListener {
+                            hidebar()
+                            Toast.makeText(this@SignUp, it.message, Toast.LENGTH_SHORT).show()
+
                         }
 
-                }
-                catch (e : Exception){
-                    withContext(Dispatchers.Main){
-                        Toast.makeText(this@SignUp,e.message,Toast.LENGTH_SHORT).show()
+
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@SignUp, e.message, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
-        }
+    }
     }
 
     private fun checkLoggedInState(){
         if(auth.currentUser == null){
-//            Toast.makeText(this@SignUp,"Are you already a member?",Toast.LENGTH_SHORT).show()
         }
         else{
-            updateProfile()
+            Toast.makeText(this@SignUp,"Logged in as " + auth.currentUser?.displayName,Toast.LENGTH_SHORT).show()
+
             startActivity(Intent(this,Dashboard::class.java))
         }
     }
