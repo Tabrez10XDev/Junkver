@@ -1,24 +1,26 @@
 package com.example.junkver
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.provider.MediaStore
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.android.synthetic.main.login.*
 import kotlinx.android.synthetic.main.login.tvpass
 import kotlinx.android.synthetic.main.login.tvsign
 import kotlinx.android.synthetic.main.signup.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.lang.Exception
+import java.lang.Runnable
 
 class SignUp: AppCompatActivity() {
     private lateinit var fullscreenContent: TextView
@@ -58,6 +60,13 @@ class SignUp: AppCompatActivity() {
         fullscreenContent = findViewById(R.id.fullscreen_content)
 
         fullscreenContentControls = findViewById(R.id.fullscreen_content_controls)
+        progresssign.visibility = View.INVISIBLE
+        bphoto.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, 0)
+
+        }
 
         auth = FirebaseAuth.getInstance()
         bregister.setOnClickListener {
@@ -66,20 +75,54 @@ class SignUp: AppCompatActivity() {
 
     }
 
+    var selecturi : Uri?= null
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 0 && resultCode ==Activity.RESULT_OK && data != null ){
+            selecturi = data.data
+            bphoto.alpha = 0f
+
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selecturi)
+            circlesign.setImageBitmap(bitmap)
+        }
+    }
+
+    private fun showbar(){
+        progresssign.visibility = View.VISIBLE
+        bregister.isEnabled = false
+
+    }
+
+    private fun hidebar(){
+        progresssign.visibility = View.INVISIBLE
+        bregister.isEnabled = true
+    }
     private fun registerUser() {
+        showbar()
         val email = tvsign.text.toString()
         val password = tvpass.text.toString()
         if( email.isNotEmpty() && password.isNotEmpty()){
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    auth.createUserWithEmailAndPassword(email,password)
+                    auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener {
+                        hidebar()
+                    }.addOnCanceledListener {
+                        hidebar()
+                        Toast.makeText(this@SignUp,"Error!",Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener(){
+                        Toast.makeText(this@SignUp,it.message,Toast.LENGTH_SHORT).show()
+                        hidebar()
+
+                    }
                     withContext(Dispatchers.Main){
+//                        updateProfile()
                         checkLoggedInState()
                     }
                 }
                 catch (e : Exception){
                     withContext(Dispatchers.Main){
-                        Toast.makeText(this@SignUp,e.toString(),Toast.LENGTH_SHORT).show()
+                        hidebar()
+                        Toast.makeText(this@SignUp,e.message,Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -87,12 +130,35 @@ class SignUp: AppCompatActivity() {
     }
 
 
+    private fun updateProfile(){
+        val username = tvuserreg.text.toString()
+        auth.currentUser?.let {user->
+            val profileUpdate = UserProfileChangeRequest.Builder()
+                .setDisplayName(username)
+                .build()
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    user.updateProfile(profileUpdate)
+                        withContext(Dispatchers.Main){
+                            Toast.makeText(this@SignUp,"Updated username",Toast.LENGTH_SHORT).show()
+                        }
+
+                }
+                catch (e : Exception){
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(this@SignUp,e.message,Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
 
     private fun checkLoggedInState(){
         if(auth.currentUser == null){
-            Toast.makeText(this@SignUp,"You are not logged in",Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this@SignUp,"Are you already a member?",Toast.LENGTH_SHORT).show()
         }
         else{
+            updateProfile()
             startActivity(Intent(this,Dashboard::class.java))
         }
     }
@@ -104,6 +170,10 @@ class SignUp: AppCompatActivity() {
         delayedHide(100)
     }
 
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+    }
 
 
     private fun hide() {
@@ -116,11 +186,6 @@ class SignUp: AppCompatActivity() {
     }
 
 
-
-    /**
-     * Schedules a call to hide() in [delayMillis], canceling any
-     * previously scheduled calls.
-     */
     private fun delayedHide(delayMillis: Int) {
         hideHandler.removeCallbacks(hideRunnable)
         hideHandler.postDelayed(hideRunnable, delayMillis.toLong())

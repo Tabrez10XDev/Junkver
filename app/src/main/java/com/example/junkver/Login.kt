@@ -5,14 +5,15 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.login.*
+import kotlinx.android.synthetic.main.login.tvpass
+import kotlinx.android.synthetic.main.login.tvsign
+import kotlinx.android.synthetic.main.signup.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,34 +51,24 @@ class Login : AppCompatActivity() {
     }
     private var isFullscreen: Boolean = false
 
-    private val hideRunnable = Runnable { hide() }
+    private var hideRunnable = Runnable { hide() }
 
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-//    private val delayHideTouchListener = View.OnTouchListener { view, motionEvent ->
-//        when (motionEvent.action) {
-//            MotionEvent.ACTION_DOWN -> if (AUTO_HIDE) {
-//                delayedHide(AUTO_HIDE_DELAY_MILLIS)
-//            }
-//            MotionEvent.ACTION_UP -> view.performClick()
-//            else -> {
-//            }
-//        }
-//        false
-//    }
+    override fun onResume() {
+        super.onResume()
+        delayedHide(100)
+    }
+
     lateinit var auth : FirebaseAuth
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         auth = FirebaseAuth.getInstance()
         setContentView(R.layout.login)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        progresslog.visibility = View.INVISIBLE
 
+        auth.signOut()
         isFullscreen = true
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -89,9 +80,10 @@ class Login : AppCompatActivity() {
         blogin.setOnClickListener {
             loginUser()
         }
+
         bsignup.setOnClickListener {
             startActivity(Intent(this, SignUp::class.java))
-//            overridePendingTransition(slide)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 
         }
         // Upon interacting with UI controls, delay any scheduled hide()
@@ -106,18 +98,32 @@ class Login : AppCompatActivity() {
     }
 
     private fun loginUser() {
+        showbar()
         val email = tvsign.text.toString()
         val password = tvpass.text.toString()
         if( email.isNotEmpty() && password.isNotEmpty()){
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    auth.signInWithEmailAndPassword(email,password)
+                    auth.signInWithEmailAndPassword(email,password).addOnCompleteListener {
+                        if(it.isSuccessful){
+                            hidebar()
+                        }
+                        else {
+                            hidebar()
+                            Toast.makeText(this@Login, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+                        }
+                    }.addOnCanceledListener {
+                        hidebar()
+                        Toast.makeText(this@Login, "Error!", Toast.LENGTH_SHORT).show()
+
+                    }
                     withContext(Dispatchers.Main){
                         checkLoggedInState()
                     }
                 }
                 catch (e : Exception){
                     withContext(Dispatchers.Main){
+                        hidebar()
                         Toast.makeText(this@Login,e.toString(), Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -130,6 +136,18 @@ class Login : AppCompatActivity() {
             startActivity(Intent(this,Dashboard::class.java))
 
         }
+    }
+
+    private fun hidebar(){
+        progresslog.visibility = View.INVISIBLE
+        blogin.isEnabled = true
+        bsignup.isEnabled = true
+    }
+
+    private fun showbar(){
+        progresslog.visibility = View.VISIBLE
+        blogin.isEnabled = false
+        bsignup.isEnabled = false
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

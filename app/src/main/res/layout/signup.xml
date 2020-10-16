@@ -48,21 +48,23 @@
                 android:id="@+id/tvsign"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
                 android:ems="10"
                 android:hint="Email-Id"
                 android:inputType="textPersonName"
-                app:layout_constraintBottom_toTopOf="@+id/tvpass"
+                app:layout_constraintBottom_toTopOf="@+id/tvuserreg"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.898" />
+                app:layout_constraintTop_toBottomOf="@+id/bphoto"
+                app:layout_constraintVertical_bias="1.0" />
 
             <EditText
                 android:id="@+id/tvpass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="384dp"
+                android:layout_marginBottom="304dp"
                 android:ems="10"
                 android:hint="Password"
                 android:inputType="textPassword"
@@ -76,11 +78,62 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="52dp"
+                android:background="@drawable/roundedbutton"
                 android:text="SignUp"
                 android:textAllCaps="false"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvpass" />
+
+            <EditText
+                android:id="@+id/tvuserreg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:ems="10"
+                android:hint="Username"
+                android:inputType="textPersonName"
+                app:layout_constraintBottom_toTopOf="@+id/tvpass"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/progresssign"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="53dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bregister" />
+
+            <Button
+                android:id="@+id/bphoto"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="4dp"
+
+                android:background="@drawable/imageselector"
+                android:text="Select Photo"
+                app:layout_constraintBottom_toTopOf="@+id/tvuserreg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.455"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/circlesign"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:civ_border_color="#FF000000"
+                app:civ_border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="@+id/bphoto"
+                app:layout_constraintEnd_toEndOf="@+id/bphoto"
+                app:layout_constraintStart_toStartOf="@+id/bphoto"
+                app:layout_constraintTop_toTopOf="@+id/bphoto" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
