@@ -64,19 +64,17 @@ class Login : AppCompatActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.FullscreenTheme)
+
         super.onCreate(savedInstanceState)
         auth = FirebaseAuth.getInstance()
+        auth.signOut()
         setContentView(R.layout.login)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         progresslog.visibility = View.INVISIBLE
 
-        auth.signOut()
         isFullscreen = true
-
-        // Set up the user interaction to manually show or hide the system UI.
         fullscreenContent = findViewById(R.id.fullscreen_content)
-//        fullscreenContent.setOnClickListener { toggle() }
-
         fullscreenContentControls = findViewById(R.id.fullscreen_content_controls)
 
         blogin.setOnClickListener {
@@ -89,19 +87,21 @@ class Login : AppCompatActivity() {
         }
 
         bsignup.setOnClickListener {
+            val view = this.currentFocus
+            view?.let { v ->
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(v.windowToken, 0)
+            }
             startActivity(Intent(this, SignUp::class.java))
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 
         }
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-//        findViewById<Button>(R.id.dummy_button).setOnTouchListener(delayHideTouchListener)
+
     }
 
     override fun onStart() {
         super.onStart()
-//        checkLoggedInState()
+        checkLoggedInState()
     }
 
     private fun loginUser() {
