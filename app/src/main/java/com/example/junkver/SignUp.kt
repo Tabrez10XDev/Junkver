@@ -170,8 +170,10 @@ class SignUp: AppCompatActivity() {
         }
         else{
             Toast.makeText(this@SignUp,"Logged in as " + auth.currentUser?.displayName,Toast.LENGTH_SHORT).show()
+val intent = Intent(this,Dashboard::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-            startActivity(Intent(this,Dashboard::class.java))
+            startActivity(intent)
         }
     }
 

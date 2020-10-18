@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="0dp"
-        android:layout_marginBottom="-44dp"
+        android:layout_marginBottom="-64dp"
         android:fitsSystemWindows="true">
 
         <LinearLayout
@@ -52,7 +52,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
+                <fragment
+                    android:id="@+id/nav_host_fragment"
+                    android:name="androidx.navigation.fragment.NavHostFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:defaultNavHost="true"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:navGraph="@navigation/mobile_navigation" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <include
@@ -66,6 +75,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:fitsSystemWindows="true"
+
                 app:headerLayout="@layout/nav_header_main"
                 app:menu="@menu/activity_drawer" />
 

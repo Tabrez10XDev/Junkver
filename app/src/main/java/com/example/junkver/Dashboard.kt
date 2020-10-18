@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
+import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -14,6 +15,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.graphics.createBitmap
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -50,6 +56,7 @@ class Dashboard:AppCompatActivity() {
     private val hideRunnable = Runnable { hide() }
 
 
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     lateinit var auth : FirebaseAuth
 
@@ -87,11 +94,28 @@ class Dashboard:AppCompatActivity() {
 
         swipename.text = auth.currentUser?.displayName
         Glide.with(this).load(selecturi).into(swipephoto)
+        val navController = findNavController(R.id.nav_host_fragment)
 
+//        appBarConfiguration = AppBarConfiguration(setOf(
+//            R.id.profile, R.id.server), drawerLayout)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
 
 
 
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        delayedHide(100)
+    }
+
+
+
+
+
+
 
     private fun verifyUser(auth : FirebaseAuth){
         val uid = auth.uid
@@ -101,6 +125,8 @@ class Dashboard:AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+
 
 
 

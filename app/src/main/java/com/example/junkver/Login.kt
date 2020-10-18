@@ -68,7 +68,6 @@ class Login : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         auth = FirebaseAuth.getInstance()
-        auth.signOut()
         setContentView(R.layout.login)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         progresslog.visibility = View.INVISIBLE
@@ -138,7 +137,9 @@ class Login : AppCompatActivity() {
     private fun checkLoggedInState(){
         if(auth.currentUser != null){
             Toast.makeText(this@Login,"Logged in as " + auth.currentUser?.displayName, Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this,Dashboard::class.java))
+            val intent = Intent(this,Dashboard::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
 
         }
     }
