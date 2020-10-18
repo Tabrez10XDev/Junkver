@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_navigation"
+    app:startDestination="@id/FLogin">
+
+    <fragment
+        android:id="@+id/FLogin"
+        android:name="com.example.junkver.FLogin"
+        android:label="fragment_f_login"
+        tools:layout="@layout/fragment_f_login" >
+        <action
+            android:id="@+id/action_FLogin_to_FSignup"
+            app:destination="@id/FSignup" />
+    </fragment>
+    <fragment
+        android:id="@+id/FSignup"
+        android:name="com.example.junkver.FSignup"
+        android:label="fragment_f_signup"
+        tools:layout="@layout/fragment_f_signup" />
+</navigation>

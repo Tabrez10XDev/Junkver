@@ -13,8 +13,6 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.login.*
-import kotlinx.android.synthetic.main.login.tvpass
-import kotlinx.android.synthetic.main.login.tvsign
 import kotlinx.android.synthetic.main.signup.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,7 +58,7 @@ class Login : AppCompatActivity() {
         delayedHide(100)
     }
 
-    lateinit var auth : FirebaseAuth
+    lateinit var auth: FirebaseAuth
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,91 +68,79 @@ class Login : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         setContentView(R.layout.login)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        progresslog.visibility = View.INVISIBLE
+//        progresslog.visibility = View.INVISIBLE
 
         isFullscreen = true
         fullscreenContent = findViewById(R.id.fullscreen_content)
         fullscreenContentControls = findViewById(R.id.fullscreen_content_controls)
 
-        blogin.setOnClickListener {
-            val view = this.currentFocus
-            view?.let { v ->
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.hideSoftInputFromWindow(v.windowToken, 0)
-            }
-            loginUser()
-        }
-
-        bsignup.setOnClickListener {
-            val view = this.currentFocus
-            view?.let { v ->
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.hideSoftInputFromWindow(v.windowToken, 0)
-            }
-            startActivity(Intent(this, SignUp::class.java))
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-
-        }
-
+//        blogin.setOnClickListener {
+//            val view = this.currentFocus
+//            view?.let { v ->
+//                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+//                imm?.hideSoftInputFromWindow(v.windowToken, 0)
+//            }
+//            loginUser()
     }
+
 
     override fun onStart() {
         super.onStart()
-        checkLoggedInState()
+//        checkLoggedInState()
     }
 
-    private fun loginUser() {
-        showbar()
-        val email = tvsign.text.toString()
-        val password = tvpass.text.toString()
-        if( email.isNotEmpty() && password.isNotEmpty()){
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    auth.signInWithEmailAndPassword(email,password).addOnSuccessListener {
-                        hidebar()
-                        checkLoggedInState()
-                    }.addOnFailureListener {
-                            hidebar()
-                            Toast.makeText(this@Login, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+//    private fun loginUser() {
+//        showbar()
+//        val email = tvsign.text.toString()
+//        val password = tvpass.text.toString()
+//        if( email.isNotEmpty() && password.isNotEmpty()){
+//            CoroutineScope(Dispatchers.IO).launch {
+//                try {
+//                    auth.signInWithEmailAndPassword(email,password).addOnSuccessListener {
+//                        hidebar()
+//                        checkLoggedInState()
+//                    }.addOnFailureListener {
+//                            hidebar()
+//                            Toast.makeText(this@Login, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+//
+//                    }.addOnCanceledListener {
+//                        hidebar()
+//                        Toast.makeText(this@Login, "Error!", Toast.LENGTH_SHORT).show()
+//
+//                    }
+//
+//                }
+//                catch (e : Exception){
+//                    withContext(Dispatchers.Main){
+//                        hidebar()
+//                        Toast.makeText(this@Login,e.toString(), Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-                    }.addOnCanceledListener {
-                        hidebar()
-                        Toast.makeText(this@Login, "Error!", Toast.LENGTH_SHORT).show()
+//    private fun checkLoggedInState(){
+//        if(auth.currentUser != null){
+//            Toast.makeText(this@Login,"Logged in as " + auth.currentUser?.displayName, Toast.LENGTH_SHORT).show()
+//            val intent = Intent(this,Dashboard::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+//            startActivity(intent)
+//
+//        }
+//    }
 
-                    }
+//    private fun hidebar(){
+//        progresslog.visibility = View.INVISIBLE
+//        blogin.isEnabled = true
+//        bsignup.isEnabled = true
+//    }
 
-                }
-                catch (e : Exception){
-                    withContext(Dispatchers.Main){
-                        hidebar()
-                        Toast.makeText(this@Login,e.toString(), Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun checkLoggedInState(){
-        if(auth.currentUser != null){
-            Toast.makeText(this@Login,"Logged in as " + auth.currentUser?.displayName, Toast.LENGTH_SHORT).show()
-            val intent = Intent(this,Dashboard::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-
-        }
-    }
-
-    private fun hidebar(){
-        progresslog.visibility = View.INVISIBLE
-        blogin.isEnabled = true
-        bsignup.isEnabled = true
-    }
-
-    private fun showbar(){
-        progresslog.visibility = View.VISIBLE
-        blogin.isEnabled = false
-        bsignup.isEnabled = false
-    }
+//    private fun showbar(){
+//        progresslog.visibility = View.VISIBLE
+//        blogin.isEnabled = false
+//        bsignup.isEnabled = false
+//    }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
