@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FLogin"
-        android:name="com.example.junkver.FLogin"
+        android:name="com.example.junkver.fragments.FLogin"
         android:label="fragment_f_login"
         tools:layout="@layout/fragment_f_login" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/FSignup"
-        android:name="com.example.junkver.FSignup"
+        android:name="com.example.junkver.fragments.FSignup"
         android:label="fragment_f_signup"
         tools:layout="@layout/fragment_f_signup" />
 </navigation>

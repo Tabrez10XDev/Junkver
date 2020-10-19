@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/profile">
+    app:startDestination="@id/existing">
 
     <fragment
         android:id="@+id/profile"
-        android:name="com.example.junkver.Profile"
+        android:name="com.example.junkver.fragments.Profile"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -16,7 +16,34 @@
     </fragment>
     <fragment
         android:id="@+id/server"
-        android:name="com.example.junkver.Server"
+        android:name="com.example.junkver.fragments.Server"
         android:label="fragment_server"
-        tools:layout="@layout/fragment_server" />
+        tools:layout="@layout/fragment_server" >
+        <action
+            android:id="@+id/action_server_to_changePass"
+            app:destination="@id/changePass" />
+    </fragment>
+    <fragment
+        android:id="@+id/existing"
+        android:name="com.example.junkver.fragments.Exisiting"
+        android:label="fragment_exisiting"
+        tools:layout="@layout/fragment_existing" >
+        <action
+            android:id="@+id/action_exisiting_to_profile"
+            app:destination="@id/profile" />
+    </fragment>
+    <fragment
+        android:id="@+id/changePass"
+        android:name="com.example.junkver.fragments.ChangePass"
+        android:label="fragment_change_pass"
+        tools:layout="@layout/fragment_change_pass" >
+        <action
+            android:id="@+id/action_changePass_to_support"
+            app:destination="@id/support" />
+    </fragment>
+    <fragment
+        android:id="@+id/support"
+        android:name="com.example.junkver.fragments.Support"
+        android:label="fragment_support"
+        tools:layout="@layout/fragment_support" />
 </navigation>

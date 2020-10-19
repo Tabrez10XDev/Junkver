@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/gradient_bg_1"
-    tools:context=".FSignup">
+    tools:context=".fragments.FSignup">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -36,10 +36,13 @@
             android:background="@color/black_overlay"
             android:orientation="horizontal"
             tools:ignore="UselessParent"/>
-
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
 
             <EditText
                 android:id="@+id/tvsign"
@@ -131,9 +134,8 @@
                 app:layout_constraintEnd_toEndOf="@+id/bphoto"
                 app:layout_constraintStart_toStartOf="@+id/bphoto"
                 app:layout_constraintTop_toTopOf="@+id/bphoto" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
+</androidx.core.widget.NestedScrollView>
     </FrameLayout>
 
 </FrameLayout>

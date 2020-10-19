@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/gradient_bg_1"
-    tools:context=".Dashboard">
+    tools:context=".app.Dashboard">
 
 
     <TextView
@@ -24,9 +24,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="-64dp"
-        android:fitsSystemWindows="true">
+        android:layout_marginBottom="-64dp">
 
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
@@ -50,7 +48,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="#FFFFFF">
 
                 <fragment
                     android:id="@+id/nav_host_fragment"

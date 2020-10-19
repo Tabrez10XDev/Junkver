@@ -1,33 +1,25 @@
-package com.example.junkver
+package com.example.junkver.app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import com.example.junkver.R
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.login.*
-import kotlinx.android.synthetic.main.signup.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.Exception
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
+
 class Login : AppCompatActivity() {
     private lateinit var fullscreenContent: TextView
     private lateinit var fullscreenContentControls: LinearLayout
     private val hideHandler = Handler()
+
 
     @SuppressLint("InlinedApi")
     private val hidePart2Runnable = Runnable {
@@ -68,96 +60,25 @@ class Login : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         setContentView(R.layout.login)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//        progresslog.visibility = View.INVISIBLE
 
         isFullscreen = true
         fullscreenContent = findViewById(R.id.fullscreen_content)
         fullscreenContentControls = findViewById(R.id.fullscreen_content_controls)
 
-//        blogin.setOnClickListener {
-//            val view = this.currentFocus
-//            view?.let { v ->
-//                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-//                imm?.hideSoftInputFromWindow(v.windowToken, 0)
-//            }
-//            loginUser()
     }
 
 
     override fun onStart() {
         super.onStart()
-//        checkLoggedInState()
     }
-
-//    private fun loginUser() {
-//        showbar()
-//        val email = tvsign.text.toString()
-//        val password = tvpass.text.toString()
-//        if( email.isNotEmpty() && password.isNotEmpty()){
-//            CoroutineScope(Dispatchers.IO).launch {
-//                try {
-//                    auth.signInWithEmailAndPassword(email,password).addOnSuccessListener {
-//                        hidebar()
-//                        checkLoggedInState()
-//                    }.addOnFailureListener {
-//                            hidebar()
-//                            Toast.makeText(this@Login, "Invalid Credentials", Toast.LENGTH_SHORT).show()
-//
-//                    }.addOnCanceledListener {
-//                        hidebar()
-//                        Toast.makeText(this@Login, "Error!", Toast.LENGTH_SHORT).show()
-//
-//                    }
-//
-//                }
-//                catch (e : Exception){
-//                    withContext(Dispatchers.Main){
-//                        hidebar()
-//                        Toast.makeText(this@Login,e.toString(), Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-//    private fun checkLoggedInState(){
-//        if(auth.currentUser != null){
-//            Toast.makeText(this@Login,"Logged in as " + auth.currentUser?.displayName, Toast.LENGTH_SHORT).show()
-//            val intent = Intent(this,Dashboard::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-//            startActivity(intent)
-//
-//        }
-//    }
-
-//    private fun hidebar(){
-//        progresslog.visibility = View.INVISIBLE
-//        blogin.isEnabled = true
-//        bsignup.isEnabled = true
-//    }
-
-//    private fun showbar(){
-//        progresslog.visibility = View.VISIBLE
-//        blogin.isEnabled = false
-//        bsignup.isEnabled = false
-//    }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
 
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
         delayedHide(100)
     }
 
-//    private fun toggle() {
-//        if (isFullscreen) {
-//            hide()
-//        } else {
-//            show()
-//        }
-//    }
+
 
     private fun hide() {
         // Hide UI first

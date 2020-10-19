@@ -1,42 +1,29 @@
-package com.example.junkver
+package com.example.junkver.app
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.provider.MediaStore
-import android.view.MenuItem
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.graphics.createBitmap
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
+import com.example.junkver.R
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.login.*
-import kotlinx.android.synthetic.main.nav_header_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.Exception
 
 class Dashboard:AppCompatActivity() {
     private lateinit var fullscreenContent: TextView
     private lateinit var fullscreenContentControls: LinearLayout
     private val hideHandler = Handler()
-
     @SuppressLint("InlinedApi")
     private val hidePart2Runnable = Runnable {
 
@@ -53,20 +40,19 @@ class Dashboard:AppCompatActivity() {
         fullscreenContentControls.visibility = View.VISIBLE
     }
     private var isFullscreen: Boolean = false
-    private val hideRunnable = Runnable { hide() }
+    private var hideRunnable = Runnable { hide() }
 
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
 
     lateinit var auth : FirebaseAuth
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("tab","out dash")
 
         setContentView(R.layout.dashboard)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
-//        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         isFullscreen = true
@@ -96,20 +82,25 @@ class Dashboard:AppCompatActivity() {
         Glide.with(this).load(selecturi).into(swipephoto)
         val navController = findNavController(R.id.nav_host_fragment)
 
-//        appBarConfiguration = AppBarConfiguration(setOf(
-//            R.id.profile, R.id.server), drawerLayout)
-//        setupActionBarWithNavController(navController, appBarConfiguration)
+
         navView.setupWithNavController(navController)
 
 
 
+
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        moveTaskToBack(true)
+    }
     override fun onResume() {
         super.onResume()
-
         delayedHide(100)
     }
+
+
+
 
 
 
@@ -120,7 +111,7 @@ class Dashboard:AppCompatActivity() {
     private fun verifyUser(auth : FirebaseAuth){
         val uid = auth.uid
         if(uid == null){
-            val intent = Intent(this,Login::class.java)
+            val intent = Intent(this, Login::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
@@ -143,6 +134,7 @@ class Dashboard:AppCompatActivity() {
         supportActionBar?.hide()
         fullscreenContentControls.visibility = View.GONE
         isFullscreen = false
+        Log.d("Lj","hide")
 
         hideHandler.removeCallbacks(showPart2Runnable)
         hideHandler.postDelayed(hidePart2Runnable, UI_ANIMATION_DELAY.toLong())

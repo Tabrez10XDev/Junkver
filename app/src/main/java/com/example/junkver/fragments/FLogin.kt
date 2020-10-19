@@ -1,20 +1,32 @@
-package com.example.junkver
+package com.example.junkver.fragments
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.junkver.R
+import com.example.junkver.app.Dashboard
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.fragment_f_login.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * An example full-screen fragment that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-class Server : Fragment() {
+class FLogin : Fragment() {
     private val hideHandler = Handler()
 
     @Suppress("InlinedApi")
@@ -41,28 +53,21 @@ class Server : Fragment() {
     private var visible: Boolean = false
     private val hideRunnable = Runnable { hide() }
 
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    private val delayHideTouchListener = View.OnTouchListener { _, _ ->
-        if (AUTO_HIDE) {
-            delayedHide(AUTO_HIDE_DELAY_MILLIS)
-        }
-        false
+    override fun onStart() {
+        super.onStart()
+        checkLoggedInState()
     }
 
-    private var dummyButton: Button? = null
     private var fullscreenContent: View? = null
     private var fullscreenContentControls: View? = null
+    lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_server, container, false)
+        return inflater.inflate(R.layout.fragment_f_login, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,17 +75,99 @@ class Server : Fragment() {
 
         visible = true
 
-        dummyButton = view.findViewById(R.id.dummy_button)
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
         // Set up the user interaction to manually show or hide the system UI.
-        fullscreenContent?.setOnClickListener { toggle() }
+        auth = FirebaseAuth.getInstance()
+        hidebar()
 
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        dummyButton?.setOnTouchListener(delayHideTouchListener)
+
+                blogin.setOnClickListener {
+                    val view = activity?.currentFocus
+                    view?.let { v ->
+                        val imm =
+                            activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                        imm?.hideSoftInputFromWindow(v.windowToken, 0)
+                    }
+                    loginUser()
+                }
+        bsignup.setOnClickListener {
+            val view = activity?.currentFocus
+            view?.let { v ->
+                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(v.windowToken, 0)
+            }
+//            startActivity(Intent(activity, SignUp::class.java))
+            findNavController().navigate(R.id.action_FLogin_to_FSignup)
+//            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
+        }
     }
+
+
+
+    private fun loginUser() {
+        showbar()
+        val email = tvsign.text.toString()
+        val password = tvpass.text.toString()
+        if( email.isNotEmpty() && password.isNotEmpty()){
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    auth.signInWithEmailAndPassword(email,password).addOnSuccessListener {
+                        hidebar()
+                        checkLoggedInState()
+                    }.addOnFailureListener {
+                            hidebar()
+                            Toast.makeText(activity, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+
+                    }.addOnCanceledListener {
+                        hidebar()
+                        Toast.makeText(activity, "Error!", Toast.LENGTH_SHORT).show()
+
+                    }
+
+                }
+                catch (e : Exception){
+                    withContext(Dispatchers.Main){
+                        hidebar()
+                        Toast.makeText(activity,e.toString(), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+        }
+        else{
+            Toast.makeText(activity,"Invalid Credentials", Toast.LENGTH_SHORT).show()
+            hidebar()
+        }
+    }
+
+        private fun checkLoggedInState(){
+        if(auth.currentUser != null){
+            Toast.makeText(activity,"Logged in as " + auth.currentUser?.displayName, Toast.LENGTH_SHORT).show()
+            val intent = Intent(activity, Dashboard::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            activity?.finish()
+
+        }
+    }
+
+    private fun hidebar(){
+        progresslog.visibility = View.INVISIBLE
+        blogin.isEnabled = true
+        bsignup.isEnabled = true
+    }
+
+    private fun showbar(){
+        progresslog.visibility = View.VISIBLE
+        blogin.isEnabled = false
+        bsignup.isEnabled = false
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -103,18 +190,11 @@ class Server : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        dummyButton = null
         fullscreenContent = null
         fullscreenContentControls = null
     }
 
-    private fun toggle() {
-        if (visible) {
-            hide()
-        } else {
-            show()
-        }
-    }
+
 
     private fun hide() {
         // Hide UI first

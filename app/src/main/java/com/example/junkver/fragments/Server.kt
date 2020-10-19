@@ -1,4 +1,4 @@
-package com.example.junkver
+package com.example.junkver.fragments
 
 import android.os.Bundle
 import android.os.Handler
@@ -9,12 +9,13 @@ import android.view.WindowManager
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.junkver.R
 
 /**
  * An example full-screen fragment that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-class Profile : Fragment() {
+class Server : Fragment() {
     private val hideHandler = Handler()
 
     @Suppress("InlinedApi")
@@ -62,7 +63,7 @@ class Profile : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        return inflater.inflate(R.layout.fragment_server, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

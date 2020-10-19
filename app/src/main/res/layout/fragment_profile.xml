@@ -3,9 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F4F4"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/gradient_bg_1"
 
-    tools:context=".Profile">
+    tools:context=".fragments.Profile">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -36,6 +37,102 @@
             android:background="@color/black_overlay"
             android:orientation="horizontal"
             tools:ignore="UselessParent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/profbutton"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="84dp"
+
+                android:background="@drawable/imageselector"
+                android:text="Select Photo"
+                app:layout_constraintBottom_toTopOf="@+id/tvuserreg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.455"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profphoto"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:civ_border_color="#FF000000"
+                app:civ_border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="@+id/profbutton"
+                app:layout_constraintEnd_toEndOf="@+id/profbutton"
+                app:layout_constraintStart_toStartOf="@+id/profbutton"
+                app:layout_constraintTop_toTopOf="@+id/profbutton" />
+
+            <EditText
+                android:id="@+id/profmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:ems="10"
+                android:enabled="false"
+                android:hint="Email-Id"
+                android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profbutton" />
+
+            <EditText
+                android:id="@+id/profuser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ems="10"
+                android:hint="Username"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profmail" />
+
+            <Button
+                android:id="@+id/profupdate"
+                android:layout_width="351dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="184dp"
+                android:background="@drawable/roundedbutton"
+                android:text="Update"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profuser"
+                app:layout_constraintVertical_bias="0.165" />
+
+            <Button
+                android:id="@+id/proflogout"
+                android:layout_width="314dp"
+                android:layout_height="37dp"
+                android:layout_marginBottom="76dp"
+                android:background="@drawable/roundedbutton"
+                android:text="Log Out"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.494"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/profbar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profupdate" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 
 </FrameLayout>

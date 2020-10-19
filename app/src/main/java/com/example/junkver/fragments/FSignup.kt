@@ -1,4 +1,4 @@
-package com.example.junkver
+package com.example.junkver.fragments
 
 import android.app.Activity
 import android.content.Context
@@ -7,18 +7,19 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.junkver.R
+import com.example.junkver.app.Dashboard
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_f_signup.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -75,11 +76,9 @@ class FSignup : Fragment() {
         return inflater.inflate(R.layout.fragment_f_signup, container, false)
     }
 
-    override fun onStart() {
-        super.onStart()
-//        checkLoggedInState()
-    }
 
+
+    lateinit var fireStore : FirebaseFirestore
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -88,6 +87,7 @@ class FSignup : Fragment() {
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
         auth = FirebaseAuth.getInstance()
+        fireStore = FirebaseFirestore.getInstance()
 
         hidebar()
         bphoto.setOnClickListener {
@@ -174,6 +174,7 @@ class FSignup : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         user.updateProfile(profileUpdate).addOnSuccessListener {
+
                             hidebar()
                             Toast.makeText(activity, "Updated username", Toast.LENGTH_SHORT).show()
                             checkLoggedInState()
@@ -208,10 +209,11 @@ class FSignup : Fragment() {
         }
         else{
             Toast.makeText(activity,"Logged in as " + auth.currentUser?.displayName,Toast.LENGTH_SHORT).show()
-val intent = Intent(activity,Dashboard::class.java)
+val intent = Intent(activity, Dashboard::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
 
             startActivity(intent)
+            activity?.finish()
         }
     }
 
