@@ -2,34 +2,20 @@ package com.example.junkver.fragments
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.junkver.R
-import com.example.junkver.adapter.existingAdap
-import com.example.junkver.app.Dashboard
-import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QueryDocumentSnapshot
-import kotlinx.android.synthetic.main.fragment_existing.*
-import kotlinx.coroutines.*
-import java.lang.Runnable
-import java.lang.StringBuilder
 
 /**
  * An example full-screen fragment that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-class Exisiting : Fragment() {
+class InsideFragment : Fragment() {
     private val hideHandler = Handler()
 
     @Suppress("InlinedApi")
@@ -52,68 +38,26 @@ class Exisiting : Fragment() {
     private val hideRunnable = Runnable { hide() }
 
 
+
     private var fullscreenContent: View? = null
     private var fullscreenContentControls: View? = null
 
-    lateinit var existingAdap: existingAdap
-    lateinit var fireStore : FirebaseFirestore
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_existing, container, false)
+        return inflater.inflate(R.layout.fragment_inside, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fireStore = FirebaseFirestore.getInstance()
-        val col = fireStore.collection("persons")
         visible = true
-        setUpRV()
-        existingAdap.setOnItemClickListener {
-//            val bundle = Bundle().apply {
-//                putSerializable("article",it)
-//            }    DO LATER
-            findNavController().navigate(R.id.action_existing_to_insideFragment)
-        }
 
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
-        retrievePersons()
 
-    }
-
-    private fun retrievePersons() = CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val sb : MutableList<Map<String,Any>> = arrayListOf()
-            val querySnapshot = fireStore.collection("persons").get().addOnFailureListener() {
-                Log.d("tabby", it.message)
-
-            }.addOnSuccessListener {documents->
-                for(document in documents) {
-                    Log.d("low", "${document.id} => ${document.data}")
-                    sb.add(document.data)
-                }
-                existingAdap.differ.submitList(sb)
-            }
-
-        }
-        catch (e : Exception){
-            withContext(Dispatchers.Main){
-                Toast.makeText(activity,"Error",Toast.LENGTH_LONG).show()
-
-            }
-        }
-    }
-
-    private fun setUpRV(){
-        existingAdap = existingAdap()
-        rvExisting.apply {
-            adapter = existingAdap
-            layoutManager = LinearLayoutManager(activity)
-        }
     }
 
     override fun onResume() {
@@ -122,7 +66,6 @@ class Exisiting : Fragment() {
 
 
         delayedHide(100)
-
     }
 
     override fun onPause() {
@@ -161,7 +104,6 @@ class Exisiting : Fragment() {
         (activity as? AppCompatActivity)?.supportActionBar?.show()
     }
 
-
     private fun delayedHide(delayMillis: Int) {
         hideHandler.removeCallbacks(hideRunnable)
         hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
@@ -171,8 +113,8 @@ class Exisiting : Fragment() {
 
         private const val AUTO_HIDE = true
 
-        private const val AUTO_HIDE_DELAY_MILLIS = 3000
 
+        private const val AUTO_HIDE_DELAY_MILLIS = 3000
 
         private const val UI_ANIMATION_DELAY = 300
     }

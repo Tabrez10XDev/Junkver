@@ -29,10 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**
- * An example full-screen fragment that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
+
 class Profile : Fragment() {
     private val hideHandler = Handler()
     @Suppress("InlinedApi")
@@ -64,7 +61,6 @@ class Profile : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("tab","out")
 
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
@@ -84,7 +80,6 @@ class Profile : Fragment() {
             profbutton.alpha = 0f
         }
         hidebar()
-        Log.d("tabby","poda "+selecturi.toString() )
         Glide.with(this).load(selecturi).into(profphoto)
         val email = auth.currentUser?.email
         profmail.setText(email)

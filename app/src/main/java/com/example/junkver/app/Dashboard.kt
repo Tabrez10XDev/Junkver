@@ -68,10 +68,10 @@ class Dashboard:AppCompatActivity() {
 
 
         val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, 0, 0
+            this, drawerLayout,toolbar, 0, 0
         )
         drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
+       toggle.syncState()
 //        verifyUser(auth)
         var swipe = navView.getHeaderView(0)
         var swipename = swipe.findViewById<TextView>(R.id.swipename)
