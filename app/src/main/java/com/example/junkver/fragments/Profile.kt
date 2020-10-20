@@ -1,8 +1,6 @@
 package com.example.junkver.fragments
 
 import android.app.Activity
-import android.app.Person
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -13,16 +11,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.junkver.R
 import com.example.junkver.app.Dashboard
+import com.example.junkver.app.Login
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.fragment_f_signup.*
+import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,16 +33,11 @@ import kotlinx.coroutines.withContext
  * An example full-screen fragment that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-class FSignup : Fragment() {
+class Profile : Fragment() {
     private val hideHandler = Handler()
-
     @Suppress("InlinedApi")
     private val hidePart2Runnable = Runnable {
-        // Delayed removal of status and navigation bar
 
-        // Note that some of these constants are new as of API 16 (Jelly Bean)
-        // and API 19 (KitKat). It is safe to use them, as they are inlined
-        // at compile-time and do nothing on earlier devices.
         val flags =
             View.SYSTEM_UI_FLAG_LOW_PROFILE or
                     View.SYSTEM_UI_FLAG_FULLSCREEN or
@@ -53,36 +49,28 @@ class FSignup : Fragment() {
         (activity as? AppCompatActivity)?.supportActionBar?.hide()
     }
     private val showPart2Runnable = Runnable {
-        // Delayed display of UI elements
         fullscreenContentControls?.visibility = View.VISIBLE
     }
     private var visible: Boolean = false
     private val hideRunnable = Runnable { hide() }
 
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
 
 
     private var fullscreenContent: View? = null
     private var fullscreenContentControls: View? = null
-    lateinit var auth : FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_f_signup, container, false)
+        Log.d("tab","out")
+
+        return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
-
-    var selecturi : Uri?= null
-
-    lateinit var fireStore : FirebaseFirestore
-
+    var selecturi : Uri ?= null
+    lateinit var auth : FirebaseAuth
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -91,26 +79,35 @@ class FSignup : Fragment() {
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
         auth = FirebaseAuth.getInstance()
-        fireStore = FirebaseFirestore.getInstance()
-
-
-
+        selecturi = auth.currentUser!!.photoUrl
+        if(selecturi!= null){
+            profbutton.alpha = 0f
+        }
         hidebar()
-        bphoto.setOnClickListener {
+        Log.d("tabby","poda "+selecturi.toString() )
+        Glide.with(this).load(selecturi).into(profphoto)
+        val email = auth.currentUser?.email
+        profmail.setText(email)
+        profuser.setText(auth.currentUser?.displayName)
+
+        profbutton.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
-            startActivityForResult(Intent.createChooser(intent, "Select image"),1);
+            startActivityForResult(Intent.createChooser(intent, "Select image"),2);
         }
 
-        bregister.setOnClickListener {
-            val view = activity?.currentFocus
-            view?.let { v ->
-                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.hideSoftInputFromWindow(v.windowToken, 0)
-            }
-            registerUser()
-
+        profupdate.setOnClickListener {
+            showbar()
+            updateProfile()
         }
+
+        proflogout.setOnClickListener{
+            auth.signOut()
+            startActivity(Intent(activity,Login::class.java))
+            activity?.finish()
+        }
+
+
 
 
     }
@@ -119,103 +116,62 @@ class FSignup : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
 
-        if(requestCode == 1 && resultCode == Activity.RESULT_OK && data != null ){
+        if(requestCode == 2 && resultCode == Activity.RESULT_OK && data != null ){
             selecturi = data.data
-            bphoto.alpha = 0f
-            val bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, selecturi)
-            circlesign.setImageBitmap(bitmap)
-
-        }
-    }
+            profbutton.alpha = 0f
+            Glide.with(this).load(selecturi).into(profphoto)
 
 
-    private fun savePerson(username : String) = CoroutineScope(Dispatchers.IO).launch {
-        try {
-
-            Log.d("taby","inside")
-            val user = hashMapOf(
-                "UID" to auth.uid,
-                "username" to username
-
-            )
-            auth.uid?.let {
-                var personCollection = fireStore.collection("persons").document(auth.uid!!).set(user as Map<String, Any>).addOnFailureListener {
-                    Log.d("taby","fail")
-                }.addOnSuccessListener {
-                    Log.d("taby","pass")
-                }.addOnCanceledListener {
-                    Log.d("taby","cancel")
-                }
-
-
-            }
-
-        }
-        catch (e : Exception){
-            withContext(Dispatchers.Main){
-                Toast.makeText(activity,e.message+" Update your profile again",Toast.LENGTH_LONG).show()
-                Log.d("taby",e.message  )
-
-            }
         }
     }
 
     private fun showbar(){
-        progresssign.visibility = View.VISIBLE
-        bregister.isEnabled = false
+        profbar.visibility = View.VISIBLE
+        profupdate.isEnabled = false
 
     }
 
     private fun hidebar(){
-        progresssign.visibility = View.INVISIBLE
-        bregister.isEnabled = true
+      profbar.visibility = View.INVISIBLE
+      profupdate.isEnabled = true
     }
-    private fun registerUser() {
-        showbar()
-        val email = tvsign.text.toString()
-        val password = tvpass.text.toString()
-        if( email.isNotEmpty() && password.isNotEmpty()){
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    auth.createUserWithEmailAndPassword(email,password).addOnSuccessListener {
-                        updateProfile()
-                        Toast.makeText(activity,"Account created",Toast.LENGTH_SHORT).show()
-                    }.addOnFailureListener(){
-                        Toast.makeText(activity,it.message,Toast.LENGTH_SHORT).show()
-                        hidebar()
-                    }
-
-
-                }
-                catch (e : Exception){
-                    withContext(Dispatchers.Main){
-                        hidebar()
-                        Toast.makeText(activity,e.message,Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-    }
-
+   lateinit var profileUpdate : UserProfileChangeRequest
 
     private fun updateProfile() {
-        val username = tvuserreg.text.toString()
+        val username = profuser.text.toString()
 
-        if (username.isNotEmpty() && selecturi != null ){
+        if (username.isNotEmpty()){
             auth.currentUser?.let { user ->
-                val profileUpdate = UserProfileChangeRequest.Builder()
-                    .setDisplayName(username)
-                    .setPhotoUri(selecturi)
-                    .build()
+                if(selecturi != null) {
+                    profileUpdate = UserProfileChangeRequest.Builder()
+                        .setDisplayName(username)
+                        .setPhotoUri(selecturi)
+                        .build()
+                }
+                else{
+                    profileUpdate = UserProfileChangeRequest.Builder()
+                        .setDisplayName(username)
+                        .build()
+                }
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         user.updateProfile(profileUpdate).addOnSuccessListener {
-
-                            savePerson(username)
                             hidebar()
-                            Toast.makeText(activity, "Updated username", Toast.LENGTH_SHORT).show()
-                            checkLoggedInState()
 
+                            val navView: NavigationView ?= activity?.findViewById(R.id.nav_view)
+
+                            var swipe = navView?.getHeaderView(0)
+                            var swipename = swipe?.findViewById<TextView>(R.id.swipename)
+                            swipename?.text = username
+                            if(selecturi!= null) {
+                                var swipephoto =
+                                    swipe!!.findViewById<CircleImageView>(R.id.swipephoto)
+
+                                Glide.with(this@Profile).load(selecturi).into(swipephoto)
+
+                                Toast.makeText(activity, "Updated username", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                         }.addOnFailureListener {
                             hidebar()
                             Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
@@ -234,37 +190,24 @@ class FSignup : Fragment() {
                     }
                 }
             }
-    }
+        }
         else{
             hidebar()
             Toast.makeText(activity,"Please Login manually and update your username", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun checkLoggedInState(){
-        if(auth.currentUser == null){
-        }
-        else{
-            Toast.makeText(activity,"Logged in as " + auth.currentUser?.displayName,Toast.LENGTH_SHORT).show()
-val intent = Intent(activity, Dashboard::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-            startActivity(intent)
-            activity?.finish()
-        }
-    }
-
     override fun onResume() {
         super.onResume()
+
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-//        bphoto.alpha = 1f
-
-
         delayedHide(100)
+
     }
 
     override fun onPause() {
         super.onPause()
+
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
         activity?.window?.decorView?.systemUiVisibility = 0
@@ -303,10 +246,6 @@ val intent = Intent(activity, Dashboard::class.java)
         (activity as? AppCompatActivity)?.supportActionBar?.show()
     }
 
-    /**
-     * Schedules a call to hide() in [delayMillis], canceling any
-     * previously scheduled calls.
-     */
     private fun delayedHide(delayMillis: Int) {
         hideHandler.removeCallbacks(hideRunnable)
         hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
