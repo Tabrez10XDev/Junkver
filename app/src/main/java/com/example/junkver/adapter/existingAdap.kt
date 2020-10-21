@@ -27,7 +27,7 @@ class existingAdap :RecyclerView.Adapter<existingAdap.ArticleViewHolder>() {
             oldItem: Map<String, Any>,
             newItem: Map<String, Any>
         ): Boolean {
-            return oldItem == newItem
+            return oldItem.get("UID") == newItem.get("UID")
         }
 
         override fun areContentsTheSame(

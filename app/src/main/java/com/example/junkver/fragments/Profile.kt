@@ -194,6 +194,9 @@ class Profile : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        if(selecturi== null){
+            profbutton.alpha = 1f
+        }
 
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         delayedHide(100)

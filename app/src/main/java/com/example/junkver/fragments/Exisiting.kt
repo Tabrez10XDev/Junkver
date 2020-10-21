@@ -81,8 +81,31 @@ class Exisiting : Fragment() {
 
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
-        retrievePersons()
+//        retrievePersons()
 
+        subscribeToPersons()
+
+    }
+
+    private fun subscribeToPersons(){
+
+        fireStore.collection("persons").orderBy("time").addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            firebaseFirestoreException?.let {
+                Log.d("lush",it.message)
+                return@addSnapshotListener
+            }
+            querySnapshot?.let {documents->
+                val sb : MutableList<Map<String,Any>> = arrayListOf()
+
+                for(document in documents) {
+                    sb.add(document.data)
+                }
+                Log.d("lush",sb.toString())
+
+                existingAdap.differ.submitList(sb)
+                existingAdap.notifyDataSetChanged()
+            }
+        }
     }
 
     private fun retrievePersons() = CoroutineScope(Dispatchers.IO).launch {
