@@ -115,7 +115,7 @@ class Exisiting : Fragment() {
 
     private fun subscribeToServers(){
 
-        fireStore.collection("servers").whereEqualTo("Admin",auth.uid).orderBy("createdAt", Query.Direction.DESCENDING)
+        fireStore.collection("servers").whereArrayContains("Admin",auth.uid.toString()).orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     return@addSnapshotListener

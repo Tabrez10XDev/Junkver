@@ -95,12 +95,14 @@ class CreateServer : Fragment() {
     }
 
     private fun createServer(servername : String){
+        var admins = mutableListOf<String>()
         val time = java.sql.Timestamp(System.currentTimeMillis())
         val admin = auth.uid
+        admin?.let { admins.add(it) }
         val user = hashMapOf(
             "SID" to servername ,
             "createdAt" to time,
-            "Admin" to admin
+            "Admin" to admins
 
         )
 
