@@ -6,10 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Adapter
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.junkver.R
+import com.example.junkver.adapter.existingAdap
+import com.google.firebase.firestore.FirebaseFirestore
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Item
+import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.fragment_inside.*
 
 /**
  * An example full-screen fragment that shows and hides the system UI (i.e.
@@ -50,15 +58,47 @@ class InsideFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_inside, container, false)
     }
 
+    lateinit var fireStore : FirebaseFirestore
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         visible = true
-
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
 
+        fireStore = FirebaseFirestore.getInstance()
+        setUpRV()
     }
+
+
+  private fun setUpRV() {
+      val adapter = GroupAdapter<ViewHolder>()
+      adapter.add(ChatFromItem())
+      adapter.add(ChatToItem())
+
+      chatRV.adapter = adapter
+  }
+
+    class ChatFromItem : Item<ViewHolder>(){
+        override fun getLayout(): Int {
+            return R.layout.chat_from
+        }
+
+        override fun bind(viewHolder: ViewHolder, position: Int) {
+        }
+
+    }
+
+    class ChatToItem : Item<ViewHolder>(){
+        override fun getLayout(): Int {
+            return R.layout.chat_to
+        }
+
+        override fun bind(viewHolder: ViewHolder, position: Int) {
+        }
+
+    }
+
 
     override fun onResume() {
         super.onResume()

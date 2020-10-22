@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_server_to_changePass"
             app:destination="@id/changePass" />
+        <action
+            android:id="@+id/action_server_to_createServer"
+            app:destination="@id/createServer" />
     </fragment>
     <fragment
         android:id="@+id/existing"
@@ -54,4 +57,16 @@
         android:name="com.example.junkver.fragments.InsideFragment"
         android:label="fragment_inside"
         tools:layout="@layout/fragment_inside" />
+    <fragment
+        android:id="@+id/createServer"
+        android:name="com.example.junkver.fragments.CreateServer"
+        android:label="fragment_create_server"
+        tools:layout="@layout/fragment_create_server" >
+        <action
+            android:id="@+id/action_createServer_to_server"
+            app:destination="@id/server" />
+        <action
+            android:id="@+id/action_createServer_to_existing"
+            app:destination="@id/existing" />
+    </fragment>
 </navigation>

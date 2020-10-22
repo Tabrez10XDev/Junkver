@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.junkver.R
 import com.example.junkver.app.Dashboard
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
@@ -133,9 +134,11 @@ class FSignup : Fragment() {
         try {
 
             Log.d("taby","inside")
+            val time = java.sql.Timestamp(System.currentTimeMillis())
             val user = hashMapOf(
                 "UID" to auth.uid,
-                "username" to username
+                "username" to username,
+                "createdAt" to time
 
             )
             auth.uid?.let {

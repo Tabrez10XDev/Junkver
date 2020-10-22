@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg_1"
-    tools:context=".fragments.Server">
+    tools:context=".fragments.CreateServer">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -35,7 +35,7 @@
             android:layout_gravity="bottom|center_horizontal"
             android:background="@color/black_overlay"
             android:orientation="horizontal"
-            tools:ignore="UselessParent"/>
+            tools:ignore="UselessParent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -44,12 +44,12 @@
 
             <TextView
                 android:id="@+id/textView3"
-                android:layout_width="127dp"
+                android:layout_width="154dp"
                 android:layout_height="37dp"
                 android:layout_marginTop="100dp"
                 android:background="@drawable/gradient_bg_1"
                 android:fontFamily="sans-serif"
-                android:text="Join Server"
+                android:text="Create Server"
                 android:textColor="#000000"
                 android:textSize="24sp"
                 android:textStyle="bold|italic"
@@ -58,7 +58,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/jointv"
+                android:id="@+id/createtv"
                 android:layout_width="221dp"
                 android:layout_height="43dp"
                 android:layout_marginTop="100dp"
@@ -71,30 +71,45 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
             <Button
-                android:id="@+id/joinbutton"
+                android:id="@+id/createbutton"
                 android:layout_width="222dp"
                 android:layout_height="37dp"
                 android:layout_marginTop="52dp"
                 android:background="@drawable/roundedbutton"
-                android:text="Join"
+                android:text="Create"
                 android:textAllCaps="false"
-                app:layout_constraintEnd_toEndOf="@+id/jointv"
-                app:layout_constraintHorizontal_bias="0.496"
-                app:layout_constraintStart_toStartOf="@+id/jointv"
-                app:layout_constraintTop_toBottomOf="@+id/jointv" />
+                app:layout_constraintEnd_toEndOf="@+id/createtv"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/createtv"
+                app:layout_constraintTop_toBottomOf="@+id/createtv" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/joinFAB"
+            <TextView
+                android:id="@+id/creategoback"
+                android:layout_width="214dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="44dp"
+                android:text="Have a Server link? Click here"
+                android:textAlignment="center"
+                android:textColor="#234159"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.522"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/createbutton" />
+
+            <ProgressBar
+                android:id="@+id/createBar"
+                style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="108dp"
-                android:clickable="true"
-                android:src="@android:drawable/ic_menu_add"
-                app:backgroundTint="#627BBF"
+                android:layout_marginBottom="220dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.816"
+                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>

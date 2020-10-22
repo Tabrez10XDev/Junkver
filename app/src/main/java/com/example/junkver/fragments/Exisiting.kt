@@ -19,6 +19,7 @@ import com.example.junkver.adapter.existingAdap
 import com.example.junkver.app.Dashboard
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import kotlinx.android.synthetic.main.fragment_existing.*
 import kotlinx.coroutines.*
@@ -83,29 +84,51 @@ class Exisiting : Fragment() {
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
 //        retrievePersons()
 
-        subscribeToPersons()
+        subscribeToServers()
 
     }
 
     private fun subscribeToPersons(){
 
-        fireStore.collection("persons").orderBy("time").addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-            firebaseFirestoreException?.let {
-                Log.d("lush",it.message)
-                return@addSnapshotListener
-            }
-            querySnapshot?.let {documents->
-                val sb : MutableList<Map<String,Any>> = arrayListOf()
-
-                for(document in documents) {
-                    sb.add(document.data)
+        fireStore.collection("persons").orderBy("createdAt", Query.Direction.DESCENDING)
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                firebaseFirestoreException?.let {
+                    return@addSnapshotListener
                 }
-                Log.d("lush",sb.toString())
+                querySnapshot?.let {documents->
+                    val sb : MutableList<Map<String,Any>> = arrayListOf()
 
-                existingAdap.differ.submitList(sb)
-                existingAdap.notifyDataSetChanged()
+                    for(document in documents) {
+                        sb.add(document.data)
+                    }
+                    Log.d("lush",sb.toString())
+
+                    existingAdap.differ.submitList(sb)
+                    existingAdap.notifyDataSetChanged()
+                }
             }
-        }
+    }
+
+
+    private fun subscribeToServers(){
+
+        fireStore.collection("servers").orderBy("createdAt", Query.Direction.DESCENDING)
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                firebaseFirestoreException?.let {
+                    return@addSnapshotListener
+                }
+                querySnapshot?.let {documents->
+                    val sb : MutableList<Map<String,Any>> = arrayListOf()
+
+                    for(document in documents) {
+                        sb.add(document.data)
+                    }
+                    Log.d("king",sb.toString())
+
+                    existingAdap.differ.submitList(sb)
+                    existingAdap.notifyDataSetChanged()
+                }
+            }
     }
 
     private fun retrievePersons() = CoroutineScope(Dispatchers.IO).launch {

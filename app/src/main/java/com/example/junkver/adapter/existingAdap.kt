@@ -58,10 +58,10 @@ return oldItem == newItem
 //            tvTitle.text = article.title
 //            tvDescription.text = article.description
 //            tvPublishedAt.text = article.publishedAt
-//            setOnClickListener {
-//                onItemClickListener?.let { it(article) }
-//            }
-            chatlisthead.text = article.get("username").toString()
+            setOnClickListener {
+                onItemClickListener?.let { it(article) }
+            }
+            chatlisthead.text = article.get("SID").toString()
         }
 
 
