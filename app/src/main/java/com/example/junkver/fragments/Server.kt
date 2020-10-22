@@ -1,22 +1,23 @@
 package com.example.junkver.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.junkver.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.fragment_f_signup.*
 import kotlinx.android.synthetic.main.fragment_server.*
 
-/**
- * An example full-screen fragment that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 class Server : Fragment() {
     private val hideHandler = Handler()
 
@@ -44,6 +45,8 @@ class Server : Fragment() {
     private var fullscreenContent: View? = null
     private var fullscreenContentControls: View? = null
 
+    lateinit var fireStore : FirebaseFirestore
+    lateinit var auth : FirebaseAuth
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,11 +60,39 @@ class Server : Fragment() {
 
         visible = true
 
+        hidebar()
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
+        fireStore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
         joinFAB.setOnClickListener {
             findNavController().navigate(R.id.action_server_to_createServer)
         }
+        joinbutton.setOnClickListener {
+            showbar()
+            val servername = jointv.text.toString()
+            val view = activity?.currentFocus
+            view?.let { v ->
+                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(v.windowToken, 0)
+            }
+        }
+
+    }
+
+
+    private fun showbar(){
+        joinBar.visibility = View.VISIBLE
+        joinbutton.isEnabled = false
+
+    }
+
+    private fun hidebar(){
+        joinBar.visibility = View.INVISIBLE
+        joinbutton.isEnabled = true
+    }
+
+    private fun joinServer(servername : String){
 
     }
 

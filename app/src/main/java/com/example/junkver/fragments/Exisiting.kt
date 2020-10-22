@@ -18,6 +18,7 @@ import com.example.junkver.R
 import com.example.junkver.adapter.existingAdap
 import com.example.junkver.app.Dashboard
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
@@ -56,6 +57,7 @@ class Exisiting : Fragment() {
     private var fullscreenContent: View? = null
     private var fullscreenContentControls: View? = null
 
+    lateinit var auth : FirebaseAuth
     lateinit var existingAdap: existingAdap
     lateinit var fireStore : FirebaseFirestore
     override fun onCreateView(
@@ -79,6 +81,7 @@ class Exisiting : Fragment() {
 //            }    DO LATER
             findNavController().navigate(R.id.action_existing_to_insideFragment)
         }
+        auth = FirebaseAuth.getInstance()
 
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
@@ -112,7 +115,7 @@ class Exisiting : Fragment() {
 
     private fun subscribeToServers(){
 
-        fireStore.collection("servers").orderBy("createdAt", Query.Direction.DESCENDING)
+        fireStore.collection("servers").whereEqualTo("Admin",auth.uid).orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     return@addSnapshotListener
