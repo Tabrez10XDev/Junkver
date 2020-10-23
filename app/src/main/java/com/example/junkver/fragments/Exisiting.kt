@@ -79,6 +79,7 @@ class Exisiting : Fragment() {
 //            val bundle = Bundle().apply {
 //                putSerializable("article",it)
 //            }    DO LATER
+            (activity as Dashboard).num = 1
             findNavController().navigate(R.id.action_existing_to_insideFragment)
         }
         auth = FirebaseAuth.getInstance()

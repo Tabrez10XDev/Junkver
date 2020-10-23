@@ -126,19 +126,21 @@ class Server : Fragment() {
                         fireStore.collection("servers").document(servername)
                             .update("createdAt", time).addOnSuccessListener {
                                 Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
+                                findNavController().navigate(R.id.action_server_to_existing)
                             }.addOnFailureListener {
-                                Log.d("final",it.message)
-
+                                Toast.makeText(activity,it.message,Toast.LENGTH_SHORT).show()
+                                hidebar()
                             }
 
                     }.addOnFailureListener {
-                        Log.d("final",it.message)
 
+                        Toast.makeText(activity,it.message,Toast.LENGTH_SHORT).show()
+                        hidebar()
                     }
 
             }.addOnFailureListener {
-                Log.d("final",it.message)
-            }
+                Toast.makeText(activity,it.message,Toast.LENGTH_SHORT).show()
+                hidebar()            }
     }
 
 

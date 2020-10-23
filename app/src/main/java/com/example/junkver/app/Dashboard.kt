@@ -45,6 +45,7 @@ class Dashboard:AppCompatActivity() {
 
 
 
+    public var num = 0
     lateinit var auth : FirebaseAuth
 
     @SuppressLint("ClickableViewAccessibility")
@@ -55,6 +56,7 @@ class Dashboard:AppCompatActivity() {
         setContentView(R.layout.dashboard)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
         isFullscreen = true
 
@@ -93,13 +95,23 @@ class Dashboard:AppCompatActivity() {
 
     private var doubleBack : Boolean = false
     override fun onBackPressed() {
+        if(num==0){
         if(doubleBack){
 
-            super.onBackPressed()
+            finish()
+            System.exit(0)
         }
         doubleBack = true
         Toast.makeText(this,"Press again to exit",Toast.LENGTH_SHORT).show()
         Handler().postDelayed(Runnable { doubleBack = false }, 2000)
+    }
+        else{
+//            super.onBackPressed()
+            findNavController(R.id.nav_host_fragment).navigate(R.id.action_insideFragment_to_existing)
+            num = 0
+
+
+        }
     }
     override fun onResume() {
         super.onResume()
