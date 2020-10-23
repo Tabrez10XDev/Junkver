@@ -101,34 +101,30 @@ class Server : Fragment() {
         joinbutton.isEnabled = true
     }
 
-    private fun joinServer(servername : String){
+    private fun joinServer(servername : String) {
         val time = java.sql.Timestamp(System.currentTimeMillis())
-        var admins = mutableListOf<String>()
-        val server = fireStore.collection("servers").document(servername).get().addOnSuccessListener {
-            val data = it.data
-            val admin = data?.get("Admin")
-            admins.add(admin.toString())
-            fireStore.collection("servers").document(servername).update("Admin",admins).addOnSuccessListener {
-                hidebar()
-                fireStore.collection("servers").document(servername).update("createdAt",time).addOnSuccessListener {
-                    Toast.makeText(activity,"Success",Toast.LENGTH_SHORT).show()
+        val server =
+            fireStore.collection("servers").document(servername).get().addOnSuccessListener {
+                var admins = mutableListOf<String>()
+
+                val data = it.data
+                val admin = data?.get("Admin")
+                admins.add(admin.toString())
+                auth.uid?.let { it1 -> admins.add(it1) }
+                fireStore.collection("servers").document(servername).update("Admin", admins)
+                    .addOnSuccessListener {
+                        hidebar()
+                        fireStore.collection("servers").document(servername)
+                            .update("createdAt", time).addOnSuccessListener {
+                            Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
+
                 }
-            }.addOnCanceledListener{
-                hidebar()
-                Toast.makeText(activity,"Try again",Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener {
-                hidebar()
-                Toast.makeText(activity,"Try again",Toast.LENGTH_SHORT).show()
             }
 
-        }.addOnCanceledListener {
-            hidebar()
-            Toast.makeText(activity,"Try again",Toast.LENGTH_SHORT).show()
-        }.addOnFailureListener {
-            hidebar()
-            Toast.makeText(activity,"Try again",Toast.LENGTH_SHORT).show()
-        }
-    }
+
 
 
     override fun onResume() {
