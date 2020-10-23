@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -90,9 +91,15 @@ class Dashboard:AppCompatActivity() {
 
     }
 
+    private var doubleBack : Boolean = false
     override fun onBackPressed() {
-        super.onBackPressed()
-        moveTaskToBack(true)
+        if(doubleBack){
+
+            super.onBackPressed()
+        }
+        doubleBack = true
+        Toast.makeText(this,"Press again to exit",Toast.LENGTH_SHORT).show()
+        Handler().postDelayed(Runnable { doubleBack = false }, 2000)
     }
     override fun onResume() {
         super.onResume()

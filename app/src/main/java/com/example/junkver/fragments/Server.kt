@@ -3,6 +3,7 @@ package com.example.junkver.fragments
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -106,23 +107,39 @@ class Server : Fragment() {
         val server =
             fireStore.collection("servers").document(servername).get().addOnSuccessListener {
                 var admins = mutableListOf<String>()
+                Log.d("final","two")
 
                 val data = it.data
                 val admin = data?.get("Admin")
-                admins.add(admin.toString())
+                for(i in admin as List<String>){
+                    admins.add(i)
+                    Log.d("final","loop")
+
+                }
                 auth.uid?.let { it1 -> admins.add(it1) }
+                Log.d("final","three")
+
+                Log.d("final",admins.toString())
                 fireStore.collection("servers").document(servername).update("Admin", admins)
                     .addOnSuccessListener {
                         hidebar()
                         fireStore.collection("servers").document(servername)
                             .update("createdAt", time).addOnSuccessListener {
-                            Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
-                        }
+                                Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
+                            }.addOnFailureListener {
+                                Log.d("final",it.message)
+
+                            }
+
+                    }.addOnFailureListener {
+                        Log.d("final",it.message)
 
                     }
 
-                }
+            }.addOnFailureListener {
+                Log.d("final",it.message)
             }
+    }
 
 
 
@@ -200,3 +217,5 @@ class Server : Fragment() {
         private const val UI_ANIMATION_DELAY = 300
     }
 }
+
+
