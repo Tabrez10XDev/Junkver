@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -20,6 +21,7 @@ import com.example.junkver.R
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.dashboard_bar.*
 
 class Dashboard:AppCompatActivity() {
     private lateinit var fullscreenContent: TextView
@@ -76,6 +78,8 @@ class Dashboard:AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
        toggle.syncState()
 //        verifyUser(auth)
+        toolbar.inflateMenu(R.menu.inside_menu)
+
         var swipe = navView.getHeaderView(0)
         var swipename = swipe.findViewById<TextView>(R.id.swipename)
         var swipephoto = swipe.findViewById<CircleImageView>(R.id.swipephoto)
@@ -88,9 +92,19 @@ class Dashboard:AppCompatActivity() {
 
         navView.setupWithNavController(navController)
 
+    }
 
-
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.shareLink->{
+                val share = Intent(Intent.ACTION_SEND)
+                share.type = "text/plain"
+                share.putExtra(Intent.EXTRA_SUBJECT, "Title Of The Post")
+                share.putExtra(Intent.EXTRA_TEXT, "http://www.codeofaninja.com")
+                startActivity(Intent.createChooser(share, "Share link!"))
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private var doubleBack : Boolean = false

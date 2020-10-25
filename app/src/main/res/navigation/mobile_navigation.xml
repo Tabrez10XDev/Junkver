@@ -56,7 +56,11 @@
         android:id="@+id/insideFragment"
         android:name="com.example.junkver.fragments.InsideFragment"
         android:label="fragment_inside"
-        tools:layout="@layout/fragment_inside" />
+        tools:layout="@layout/fragment_inside" >
+        <action
+            android:id="@+id/action_insideFragment_to_existing"
+            app:destination="@id/existing" />
+    </fragment>
     <fragment
         android:id="@+id/createServer"
         android:name="com.example.junkver.fragments.CreateServer"

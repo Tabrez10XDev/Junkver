@@ -3,10 +3,7 @@ package com.example.junkver.fragments
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
+import kotlinx.android.synthetic.main.dashboard_bar.*
 import kotlinx.android.synthetic.main.fragment_existing.*
 import kotlinx.coroutines.*
 import java.lang.Runnable
@@ -71,15 +69,20 @@ class Exisiting : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        activity?.toolbar?.title = ""
+        (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(false)
+
         fireStore = FirebaseFirestore.getInstance()
         val col = fireStore.collection("persons")
         visible = true
         setUpRV()
         existingAdap.setOnItemClickListener {
-//            val bundle = Bundle().apply {
-//                putSerializable("article",it)
-//            }    DO LATER
-            findNavController().navigate(R.id.action_existing_to_insideFragment)
+            val bundle = Bundle().apply {
+                putString("SID",it.get("SID").toString())
+                putString("joinID",it.get("joinID").toString())
+            }
+            (activity as Dashboard).num = 1
+            findNavController().navigate(R.id.action_existing_to_insideFragment,bundle)
         }
         auth = FirebaseAuth.getInstance()
 
@@ -157,6 +160,13 @@ class Exisiting : Fragment() {
         }
     }
 
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.inside_menu, menu)
+//        val act = menu.findItem(R.id.shareLink)
+//        act.setVisible(true)
+//        super.onCreateOptionsMenu(menu, inflater)
+//    }
+
     private fun setUpRV(){
         existingAdap = existingAdap()
         rvExisting.apply {
@@ -168,6 +178,7 @@ class Exisiting : Fragment() {
     override fun onResume() {
         super.onResume()
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(false)
 
 
         delayedHide(100)

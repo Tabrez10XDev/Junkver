@@ -106,6 +106,7 @@ class Server : Fragment() {
         val time = java.sql.Timestamp(System.currentTimeMillis())
         val server =
             fireStore.collection("servers").document(servername).get().addOnSuccessListener {
+                try{
                 var admins = mutableListOf<String>()
                 Log.d("final","two")
 
@@ -135,7 +136,11 @@ class Server : Fragment() {
                         Log.d("final",it.message)
 
                     }
-
+}
+                catch (e : Exception){
+                    hidebar()
+                    Toast.makeText(activity,"Invalid",Toast.LENGTH_SHORT).show()
+                }
             }.addOnFailureListener {
                 Log.d("final",it.message)
             }

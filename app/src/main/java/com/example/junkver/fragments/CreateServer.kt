@@ -99,14 +99,18 @@ class CreateServer : Fragment() {
         val time = java.sql.Timestamp(System.currentTimeMillis())
         val admin = auth.uid
         admin?.let { admins.add(it) }
+
+
+        val server = fireStore.collection("servers").document()
+        val ref = server.id
         val user = hashMapOf(
             "SID" to servername ,
             "createdAt" to time,
-            "Admin" to admins
+            "Admin" to admins,
+            "joinID" to ref
 
         )
-
-        val server = fireStore.collection("servers").document().set(user).addOnSuccessListener {
+        server.set(user).addOnSuccessListener {
             Toast.makeText(activity,"Created Successfully",Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_createServer_to_existing)
             hidebar()

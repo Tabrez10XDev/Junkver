@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.dashboard_bar.*
 import kotlinx.android.synthetic.main.fragment_inside.*
 
 
@@ -62,30 +63,38 @@ class InsideFragment : Fragment() {
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
 
-        val bundle = arguments?.getBundle("article")
-        (activity as Dashboard).supportActionBar?.title = bundle.toString()
+        val sid = arguments?.getString("SID")
+        val joinID = arguments?.getString("joinID")
+        (activity as Dashboard).toolbar.title = sid
         fireStore = FirebaseFirestore.getInstance()
         setUpRV()
-    }
+        (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(true)
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.shareLink ->{
-                val sharingIntent = Intent(Intent.ACTION_SEND)
-                sharingIntent.type = "text/plain"
-                val shareBody = "Here is the share content body"
-                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here")
-                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
-                startActivity(Intent.createChooser(sharingIntent, "Share via"))
+        (activity as Dashboard).toolbar.setOnMenuItemClickListener {
+            when(it.itemId){
+                R.id.shareLink-> {
+                    val share = Intent(Intent.ACTION_SEND)
+                    share.type = "text/plain"
+                    share.putExtra(Intent.EXTRA_SUBJECT, "Link for the Server")
+                    share.putExtra(Intent.EXTRA_TEXT, "http://www.codeofaninja.com")
+                    startActivity(Intent.createChooser(share, "Share link!"))
+                    return@setOnMenuItemClickListener true
+                }
+                else->{
+                    return@setOnMenuItemClickListener true
+                }
 
             }
         }
-        return super.onOptionsItemSelected(item)
     }
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.inside_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
+
+
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.inside_menu, menu)
+//        val act = menu.findItem(R.id.shareLink)
+//        act.setVisible(false)
+//        super.onCreateOptionsMenu(menu, inflater)
+//    }
 
   private fun setUpRV() {
       val adapter = GroupAdapter<ViewHolder>()
