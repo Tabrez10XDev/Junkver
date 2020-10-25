@@ -3,7 +3,10 @@ package com.example.junkver.fragments
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -73,11 +76,10 @@ class Exisiting : Fragment() {
         visible = true
         setUpRV()
         existingAdap.setOnItemClickListener {
-            val bundle = Bundle().apply {
-                putString("article",it.get("SID").toString())
-            }
-            (activity as Dashboard).num = 1
-            findNavController().navigate(R.id.action_existing_to_insideFragment,bundle)
+//            val bundle = Bundle().apply {
+//                putSerializable("article",it)
+//            }    DO LATER
+            findNavController().navigate(R.id.action_existing_to_insideFragment)
         }
         auth = FirebaseAuth.getInstance()
 
@@ -87,10 +89,7 @@ class Exisiting : Fragment() {
 
         subscribeToServers()
 
-
     }
-
-
 
     private fun subscribeToPersons(){
 

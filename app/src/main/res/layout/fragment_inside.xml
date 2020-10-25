@@ -46,7 +46,6 @@
                 android:id="@+id/editTextTextPersonName"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:layout_marginBottom="8dp"
                 android:ems="10"
                 android:hint="Enter Text"
                 android:inputType="textLongMessage|textAutoCorrect|text|textAutoComplete"
@@ -68,7 +67,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/chatRV"
-                android:layout_width="0dp"
+                android:layout_width="405dp"
                 android:layout_height="615dp"
                 android:layout_marginTop="64dp"
                 app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName"
