@@ -1,23 +1,19 @@
 package com.example.junkver.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.Adapter
-import android.widget.Button
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.junkver.R
-import com.example.junkver.adapter.existingAdap
+import com.example.junkver.app.Dashboard
 import com.google.firebase.firestore.FirebaseFirestore
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_inside.*
+
 
 /**
  * An example full-screen fragment that shows and hides the system UI (i.e.
@@ -66,10 +62,30 @@ class InsideFragment : Fragment() {
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
 
+        val bundle = arguments?.getBundle("article")
+        (activity as Dashboard).supportActionBar?.title = bundle.toString()
         fireStore = FirebaseFirestore.getInstance()
         setUpRV()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.shareLink ->{
+                val sharingIntent = Intent(Intent.ACTION_SEND)
+                sharingIntent.type = "text/plain"
+                val shareBody = "Here is the share content body"
+                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here")
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
+                startActivity(Intent.createChooser(sharingIntent, "Share via"))
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.inside_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
 
   private fun setUpRV() {
       val adapter = GroupAdapter<ViewHolder>()
