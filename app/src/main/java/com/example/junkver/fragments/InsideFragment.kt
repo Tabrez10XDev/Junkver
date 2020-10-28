@@ -1,19 +1,30 @@
 package com.example.junkver.fragments
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.junkver.R
+import com.example.junkver.adapter.InsideAdap
 import com.example.junkver.app.Dashboard
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.chat_to.view.*
 import kotlinx.android.synthetic.main.dashboard_bar.*
 import kotlinx.android.synthetic.main.fragment_inside.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 
 /**
@@ -54,30 +65,42 @@ class InsideFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_inside, container, false)
     }
-
+    lateinit var adapter : InsideAdap
+    lateinit var joinID : String
     lateinit var fireStore : FirebaseFirestore
+    lateinit var auth : FirebaseAuth
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+Log.d("poda","chill")
         visible = true
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
 
         val sid = arguments?.getString("SID")
-        val joinID = arguments?.getString("joinID")
+        joinID = arguments?.getString("joinID").toString()
         (activity as Dashboard).toolbar.title = sid
         fireStore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
         setUpRV()
+
+
+        sendbutton.setOnClickListener {
+            sendMessage()
+
+        }
         (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(true)
 
         (activity as Dashboard).toolbar.setOnMenuItemClickListener {
             when(it.itemId){
                 R.id.shareLink-> {
+
                     val share = Intent(Intent.ACTION_SEND)
                     share.type = "text/plain"
                     share.putExtra(Intent.EXTRA_SUBJECT, "Link for the Server")
-                    share.putExtra(Intent.EXTRA_TEXT, "http://www.codeofaninja.com")
+                    share.putExtra(Intent.EXTRA_TEXT, joinID)
                     startActivity(Intent.createChooser(share, "Share link!"))
+                    findNavController().navigate(R.id.action_insideFragment_to_existing)
+                    findNavController().navigate(R.id.action_existing_to_insideFragment)
                     return@setOnMenuItemClickListener true
                 }
                 else->{
@@ -86,49 +109,97 @@ class InsideFragment : Fragment() {
 
             }
         }
+
+
+        subscribeToChannel()
+
     }
 
 
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.inside_menu, menu)
-//        val act = menu.findItem(R.id.shareLink)
-//        act.setVisible(false)
-//        super.onCreateOptionsMenu(menu, inflater)
-//    }
 
-  private fun setUpRV() {
-      val adapter = GroupAdapter<ViewHolder>()
-      adapter.add(ChatFromItem())
-      adapter.add(ChatToItem())
 
+    private fun subscribeToChannel(){
+
+        val channel = fireStore.collection("servers").document(joinID).collection("messages")
+
+                channel.orderBy("createdAt",Query.Direction.DESCENDING).addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                firebaseFirestoreException?.let {
+                    return@addSnapshotListener
+                }
+                querySnapshot?.let {documents->
+                    val sb : MutableList<Map<String,Any>> = arrayListOf()
+
+                    for(document in documents) {
+                        sb.add(document.data)
+
+                    }
+                    adapter.differ2.submitList(sb)
+
+
+                }
+            }
+
+
+
+    }
+
+    private fun sendMessage(){
+        val time = java.sql.Timestamp(System.currentTimeMillis())
+
+        val txt = sendText.text.toString()
+        Log.d("tabrez",txt)
+        val message = hashMapOf(
+            "text" to txt,
+            "UID" to auth.uid,
+            "createdAt" to time
+
+        )
+        fireStore.collection("servers").document(joinID).collection("messages").document().set(message).addOnFailureListener {
+            Log.d("tabrez","HEyyY")
+
+        }.addOnSuccessListener {
+            Log.d("tabrez","HEllooo")
+
+        }
+    }
+
+    private fun setUpRV() {
+        adapter = InsideAdap()
+        chatRV.layoutManager = LinearLayoutManager(activity)
       chatRV.adapter = adapter
+
   }
 
-    class ChatFromItem : Item<ViewHolder>(){
-        override fun getLayout(): Int {
-            return R.layout.chat_from
-        }
+//    class ChatFromItem : Item<ViewHolder>(){
+//        override fun getLayout(): Int {
+//            return R.layout.chat_from
+//        }
+//
+//        override fun bind(viewHolder: ViewHolder, position: Int) {
+//        }
+//
+//    }
+//
+//    class ChatToItem(val text : String) : Item<ViewHolder>(){
+//        override fun getLayout(): Int {
+//            return R.layout.chat_to
+//        }
+//
+//        override fun bind(viewHolder: ViewHolder, position: Int) {
+//            viewHolder.itemView.apply {
+//                chatToTV.text = text
+//            }
+//        }
+//
+//    }
 
-        override fun bind(viewHolder: ViewHolder, position: Int) {
-        }
 
-    }
-
-    class ChatToItem : Item<ViewHolder>(){
-        override fun getLayout(): Int {
-            return R.layout.chat_to
-        }
-
-        override fun bind(viewHolder: ViewHolder, position: Int) {
-        }
-
-    }
 
 
     override fun onResume() {
         super.onResume()
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
+        Log.d("poda","chillman")
 
         delayedHide(100)
     }

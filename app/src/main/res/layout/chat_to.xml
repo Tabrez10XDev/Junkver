@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/gradient_bg_1">
+    android:background="@android:color/transparent">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/chattoMV"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="24dp"
         android:background="#9F0A0A"
         app:civ_border_color="#FF000000"
         app:civ_border_width="3dp"

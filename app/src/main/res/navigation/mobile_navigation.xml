@@ -60,6 +60,9 @@
         <action
             android:id="@+id/action_insideFragment_to_existing"
             app:destination="@id/existing" />
+        <action
+            android:id="@+id/action_insideFragment_self"
+            app:destination="@id/insideFragment" />
     </fragment>
     <fragment
         android:id="@+id/createServer"

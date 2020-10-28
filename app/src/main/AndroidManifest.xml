@@ -24,7 +24,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".app.Dashboard" />
+        <activity android:name=".app.Dashboard"
+            android:windowSoftInputMode="adjustResize"
+            ></activity>
     </application>
 
 </manifest>

@@ -7,6 +7,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -79,6 +80,7 @@ class Dashboard:AppCompatActivity() {
        toggle.syncState()
 //        verifyUser(auth)
         toolbar.inflateMenu(R.menu.inside_menu)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         var swipe = navView.getHeaderView(0)
         var swipename = swipe.findViewById<TextView>(R.id.swipename)
