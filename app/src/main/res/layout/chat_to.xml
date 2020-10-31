@@ -22,12 +22,22 @@
         android:id="@+id/chatToTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="12dp"
         android:background="@drawable/roundedbutton"
         android:maxWidth="260dp"
         android:text="TextView"
         app:layout_constraintEnd_toStartOf="@+id/chattoMV"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/chatToName" />
+
+    <TextView
+        android:id="@+id/chatToName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="computer"
+        android:textSize="8sp"
+        app:layout_constraintEnd_toEndOf="@+id/chatToTV"
+        app:layout_constraintStart_toStartOf="@+id/chatToTV"
+        app:layout_constraintTop_toTopOf="@+id/chattoMV" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

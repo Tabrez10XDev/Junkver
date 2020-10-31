@@ -1,30 +1,29 @@
 package com.example.junkver.fragments
 
-import android.app.Activity
-import android.content.Intent
+import android.R.attr.label
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.example.junkver.R
 import com.example.junkver.adapter.InsideAdap
 import com.example.junkver.app.Dashboard
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Item
-import com.xwray.groupie.ViewHolder
-import kotlinx.android.synthetic.main.chat_to.view.*
 import kotlinx.android.synthetic.main.dashboard_bar.*
 import kotlinx.android.synthetic.main.fragment_inside.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 
 
 /**
@@ -71,7 +70,6 @@ class InsideFragment : Fragment() {
     lateinit var auth : FirebaseAuth
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-Log.d("poda","chill")
         visible = true
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
@@ -93,14 +91,9 @@ Log.d("poda","chill")
         (activity as Dashboard).toolbar.setOnMenuItemClickListener {
             when(it.itemId){
                 R.id.shareLink-> {
-
-                    val share = Intent(Intent.ACTION_SEND)
-                    share.type = "text/plain"
-                    share.putExtra(Intent.EXTRA_SUBJECT, "Link for the Server")
-                    share.putExtra(Intent.EXTRA_TEXT, joinID)
-                    startActivity(Intent.createChooser(share, "Share link!"))
-                    findNavController().navigate(R.id.action_insideFragment_to_existing)
-                    findNavController().navigate(R.id.action_existing_to_insideFragment)
+                    var clipboard = (activity as Dashboard).getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    var clip = ClipData.newPlainText("label",joinID)
+                    clipboard.setPrimaryClip(clip)
                     return@setOnMenuItemClickListener true
                 }
                 else->{
@@ -108,6 +101,12 @@ Log.d("poda","chill")
                 }
 
             }
+        }
+        chatRV.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            if(bottom < oldBottom) {
+            chatRV.scrollBy(0,oldBottom-bottom)
+            }
+
         }
 
 
@@ -122,7 +121,7 @@ Log.d("poda","chill")
 
         val channel = fireStore.collection("servers").document(joinID).collection("messages")
 
-                channel.orderBy("createdAt",Query.Direction.DESCENDING).addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                channel.orderBy("createdAt",Query.Direction.ASCENDING).addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     return@addSnapshotListener
                 }
@@ -134,7 +133,6 @@ Log.d("poda","chill")
 
                     }
                     adapter.differ2.submitList(sb)
-
 
                 }
             }
@@ -150,7 +148,7 @@ Log.d("poda","chill")
         Log.d("tabrez",txt)
         val message = hashMapOf(
             "text" to txt,
-            "UID" to auth.uid,
+            "username" to auth.currentUser?.displayName,
             "createdAt" to time
 
         )
