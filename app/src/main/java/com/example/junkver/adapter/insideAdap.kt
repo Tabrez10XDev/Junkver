@@ -11,6 +11,7 @@ import com.example.junkver.R
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.chat_from.view.*
 import kotlinx.android.synthetic.main.chat_to.view.*
+import java.text.SimpleDateFormat
 
 
 class InsideAdap : RecyclerView.Adapter<InsideAdap.ToViewHolder>() {
@@ -80,14 +81,20 @@ class InsideAdap : RecyclerView.Adapter<InsideAdap.ToViewHolder>() {
         when(holder.itemViewType){
             11->{
                 holder.itemView.apply {
+                    val formatter = SimpleDateFormat("HH:mm:ss")
+                    val time = formatter.format(txt.get("createdAt"))
                     chatToTV.text = txt.get("text").toString()
                     chatToName.text = txt.get("username").toString()
+                    chatToTime.text = time
                 }
             }
             12->{
                 holder.itemView.apply {
+                    val formatter = SimpleDateFormat("HH:mm")
+                    val time = formatter.format(txt.get("createdAt"))
                     chatTV.text = txt.get("text").toString()
                     chatName.text = txt.get("username").toString()
+                    chatTime.text = time
                 }
             }
         }
@@ -95,10 +102,8 @@ class InsideAdap : RecyclerView.Adapter<InsideAdap.ToViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
 
-        Log.d("shami",differ2.currentList[position].get("UID").toString())
         when(differ2.currentList[position].get("UID").toString()){
             auth.uid->{
-                Log.d("shami",differ2.currentList[position].get("UID").toString())
 
                 return 11
             }

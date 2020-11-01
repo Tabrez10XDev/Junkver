@@ -32,5 +32,23 @@
         app:layout_constraintStart_toEndOf="@+id/chatlistphoto"
         app:layout_constraintTop_toTopOf="@+id/chatlistphoto" />
 
+    <TextView
+        android:id="@+id/chatlistText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/chatlisthead"
+        app:layout_constraintTop_toBottomOf="@+id/chatlisthead" />
+
+    <TextView
+        android:id="@+id/chatTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="datetime"
+        android:textSize="8sp"
+        app:layout_constraintStart_toStartOf="@+id/chatlistText"
+        app:layout_constraintTop_toBottomOf="@+id/chatlistText" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

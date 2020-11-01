@@ -25,10 +25,6 @@ import kotlinx.coroutines.*
 import java.lang.Runnable
 import java.lang.StringBuilder
 
-/**
- * An example full-screen fragment that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 class Exisiting : Fragment() {
     private val hideHandler = Handler()
 

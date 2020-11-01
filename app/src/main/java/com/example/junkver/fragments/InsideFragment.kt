@@ -145,20 +145,22 @@ class InsideFragment : Fragment() {
         val time = java.sql.Timestamp(System.currentTimeMillis())
 
         val txt = sendText.text.toString()
-        Log.d("tabrez",txt)
         val message = hashMapOf(
             "text" to txt,
             "username" to auth.currentUser?.displayName,
-            "createdAt" to time
-
+            "createdAt" to time,
+            "UID" to auth.uid
         )
-        fireStore.collection("servers").document(joinID).collection("messages").document().set(message).addOnFailureListener {
-            Log.d("tabrez","HEyyY")
+        fireStore.collection("servers").document(joinID).collection("messages").document().set(message)
+            .addOnFailureListener {
+            //TOODO
+             }
+            .addOnSuccessListener {
+            fireStore.collection("servers").document(joinID).update("createdAt",time)
+                fireStore.collection("servers").document(joinID).update("Last",txt)
+                sendText.setText("")
 
-        }.addOnSuccessListener {
-            Log.d("tabrez","HEllooo")
-
-        }
+            }
     }
 
     private fun setUpRV() {

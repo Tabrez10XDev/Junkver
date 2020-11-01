@@ -103,11 +103,13 @@ class CreateServer : Fragment() {
 
         val server = fireStore.collection("servers").document()
         val ref = server.id
+        val lastjoin = auth.currentUser?.displayName + " created the server"
         val user = hashMapOf(
             "SID" to servername ,
             "createdAt" to time,
             "Admin" to admins,
-            "joinID" to ref
+            "joinID" to ref,
+            "Last" to lastjoin
 
         )
         server.set(user).addOnSuccessListener {

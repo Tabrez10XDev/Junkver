@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.example.junkver.R
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.chatlist_ui.view.*
+import java.text.SimpleDateFormat
 
 class existingAdap :RecyclerView.Adapter<existingAdap.ArticleViewHolder>() {
 
@@ -62,7 +63,11 @@ return oldItem == newItem
             setOnClickListener {
                 onItemClickListener?.let { it(article) }
             }
+            val formatter = SimpleDateFormat("HH:mm")
+            val time = formatter.format(article.get("createdAt"))
             chatlisthead.text = article.get("SID").toString()
+            chatlistText.text = article.get("Last").toString()
+            chatTime.text = time
         }
 
 
