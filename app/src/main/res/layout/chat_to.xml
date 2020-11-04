@@ -12,8 +12,8 @@
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:background="#9F0A0A"
-        app:civ_border_color="#FF000000"
+        android:background="#FFFFFF"
+        app:civ_border_color="#FFFFFF"
         app:civ_border_width="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

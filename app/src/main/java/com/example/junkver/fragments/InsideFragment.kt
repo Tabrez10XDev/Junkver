@@ -151,6 +151,8 @@ class InsideFragment : Fragment() {
             "createdAt" to time,
             "UID" to auth.uid
         )
+        sendText.setText("")
+
         fireStore.collection("servers").document(joinID).collection("messages").document().set(message)
             .addOnFailureListener {
             //TOODO
@@ -158,7 +160,6 @@ class InsideFragment : Fragment() {
             .addOnSuccessListener {
             fireStore.collection("servers").document(joinID).update("createdAt",time)
                 fireStore.collection("servers").document(joinID).update("Last",txt)
-                sendText.setText("")
 
             }
     }
