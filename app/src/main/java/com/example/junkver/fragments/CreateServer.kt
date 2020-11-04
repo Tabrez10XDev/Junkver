@@ -1,8 +1,12 @@
 package com.example.junkver.fragments
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +19,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.junkver.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.fragment_create_server.*
 import kotlinx.android.synthetic.main.fragment_f_signup.*
 
@@ -58,15 +64,20 @@ class CreateServer : Fragment() {
     }
     lateinit var fireStore : FirebaseFirestore
 
+    var selectUri : Uri ?= null
+    lateinit var storageRef : FirebaseStorage
     lateinit var auth : FirebaseAuth
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         visible = true
 
+
+        storageRef = FirebaseStorage.getInstance()
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
 
+        createPhotoB.alpha = 1f
         hidebar()
         auth = FirebaseAuth.getInstance()
         fireStore = FirebaseFirestore.getInstance()
@@ -90,8 +101,29 @@ class CreateServer : Fragment() {
         creategoback.setOnClickListener {
             findNavController().navigate(R.id.action_createServer_to_server)
         }
+        createPhotoB.setOnClickListener {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/*"
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            startActivityForResult(Intent.createChooser(intent, "Select image"),5);
+        }
 
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+
+        if(requestCode == 5 && resultCode == Activity.RESULT_OK && data != null ){
+            selectUri = data.data
+            createPhotoB.alpha = 0f
+            val bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, selectUri)
+            imageView4.setImageBitmap(bitmap)
+
+        }
     }
 
     private fun createServer(servername : String){
@@ -109,11 +141,13 @@ class CreateServer : Fragment() {
             "createdAt" to time,
             "Admin" to admins,
             "joinID" to ref,
-            "Last" to lastjoin
+            "Last" to lastjoin,
+            "serverUri" to ""
 
         )
         server.set(user).addOnSuccessListener {
             Toast.makeText(activity,"Created Successfully",Toast.LENGTH_SHORT).show()
+            uploadGroupImage(server)
             findNavController().navigate(R.id.action_createServer_to_existing)
             hidebar()
         }.addOnFailureListener {
@@ -129,6 +163,18 @@ class CreateServer : Fragment() {
 
 
 
+    private fun uploadGroupImage(server : DocumentReference){
+
+        val imageRef = storageRef.reference.child(server.id)
+        selectUri?.let { 
+            val ref = imageRef
+                ref.putFile(it).addOnSuccessListener {
+                val downloadUri = ref.downloadUrl
+                    server.update("serverUri",downloadUri.toString())
+
+                }
+        }
+    }
     override fun onResume() {
         super.onResume()
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)

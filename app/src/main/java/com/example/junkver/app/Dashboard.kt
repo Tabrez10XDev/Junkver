@@ -2,6 +2,7 @@ package com.example.junkver.app
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -18,6 +19,10 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.example.junkver.R
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -48,7 +53,7 @@ class Dashboard:AppCompatActivity() {
 
 
 
-    public var num = 0
+    var num = 0
     lateinit var auth : FirebaseAuth
 
     @SuppressLint("ClickableViewAccessibility")
@@ -86,9 +91,38 @@ class Dashboard:AppCompatActivity() {
         var swipename = swipe.findViewById<TextView>(R.id.swipename)
         var swipephoto = swipe.findViewById<CircleImageView>(R.id.swipephoto)
         val selecturi = auth.currentUser?.photoUrl
+        Log.d("kingsman","uri="+selecturi.toString())
+
 
         swipename.text = auth.currentUser?.displayName
-        Glide.with(this).load(selecturi).into(swipephoto)
+        Log.d("kingsman","mavane")
+        Glide.with(this)
+            .load(selecturi)
+//            .listener(object: RequestListener<Drawable>{
+//                override fun onLoadFailed(
+//                    e: GlideException?,
+//                    model: Any?,
+//                    target: Target<Drawable>?,
+//                    isFirstResource: Boolean
+//                ): Boolean {
+//Log.d("kingsman","fu"+e.toString())
+//                    return true
+//                }
+//
+//                override fun onResourceReady(
+//                    resource: Drawable?,
+//                    model: Any?,
+//                    target: Target<Drawable>?,
+//                    dataSource: DataSource?,
+//                    isFirstResource: Boolean
+//                ): Boolean {
+//Log.d("kingsman","thaaaa")
+//                return true
+//                }
+//
+//
+//            })
+            .into(swipephoto)
         val navController = findNavController(R.id.nav_host_fragment)
 
 

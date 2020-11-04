@@ -114,18 +114,22 @@ class Exisiting : Fragment() {
 
     private fun subscribeToServers(){
 
-        fireStore.collection("servers").whereArrayContains("Admin",auth.uid.toString()).orderBy("createdAt", Query.Direction.DESCENDING)
-            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+
+       val fire = fireStore.collection("servers").whereArrayContains("Admin",auth.uid.toString()).orderBy("createdAt", Query.Direction.DESCENDING)
+        fire.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
+                    Log.d("kingsman",it.toString())
+
                     return@addSnapshotListener
                 }
-                querySnapshot?.let {documents->
+
+            querySnapshot?.let {documents->
                     val sb : MutableList<Map<String,Any>> = arrayListOf()
 
                     for(document in documents) {
                         sb.add(document.data)
+
                     }
-                    Log.d("king",sb.toString())
 
                     existingAdap.differ.submitList(sb)
                     existingAdap.notifyDataSetChanged()

@@ -1,5 +1,6 @@
 package com.example.junkver.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,8 @@ import com.example.junkver.R
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.chatlist_ui.view.*
 import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.abs
 
 class existingAdap :RecyclerView.Adapter<existingAdap.ArticleViewHolder>() {
 
@@ -64,10 +67,29 @@ return oldItem == newItem
                 onItemClickListener?.let { it(article) }
             }
             val formatter = SimpleDateFormat("HH:mm")
+            val dateFormat = SimpleDateFormat("dd:MM:yyyy")
             val time = formatter.format(article.get("createdAt"))
+            val dat = dateFormat.format(article.get("createdAt"))
+            val date = dateFormat.parse(dat)
+            val currentdat = dateFormat.format(Date())
+            val currentdate = dateFormat.parse(currentdat)
             chatlisthead.text = article.get("SID").toString()
             chatlistText.text = article.get("Last").toString()
-            chatTime.text = time
+            val photoUri = Uri.parse(article.get("serverUri").toString())
+            Glide.with(this).load(photoUri).into(chatlistphoto)
+            val diff: Long = abs(date.time - currentdate.time)
+            var day = diff/(24*60*60*1000)
+            if(day < 1 ) {
+                chatTime.text = time.toString()
+            }
+            else if(day > 1 && day < 7){
+                chatTime.text = day.toString() + " day"
+            }
+            else{
+                day = day/7
+                chatTime.text = day.toString() + " week"
+
+            }
         }
 
 

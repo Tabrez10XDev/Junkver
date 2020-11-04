@@ -22,7 +22,9 @@ import com.example.junkver.app.Dashboard
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.fragment_f_signup.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -81,6 +83,7 @@ class FSignup : Fragment() {
 
 
     var selecturi : Uri?= null
+    lateinit var storageRef : FirebaseStorage
 
     lateinit var fireStore : FirebaseFirestore
 
@@ -96,6 +99,7 @@ class FSignup : Fragment() {
 
 
 
+        storageRef = FirebaseStorage.getInstance()
         hidebar()
         bphoto.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -138,20 +142,20 @@ class FSignup : Fragment() {
             val user = hashMapOf(
                 "UID" to auth.uid,
                 "username" to username,
-                "createdAt" to time
+                "photoUri" to ""
 
             )
             auth.uid?.let {
-                var personCollection = fireStore.collection("persons").document(auth.uid!!).set(user as Map<String, Any>).addOnFailureListener {
-                    Log.d("taby","fail")
+                var personCollection = fireStore.collection("persons").document(auth.uid!!)
+                    personCollection.set(user as Map<String, Any>).addOnFailureListener {
                 }.addOnSuccessListener {
-                    Log.d("taby","pass")
-                }.addOnCanceledListener {
-                    Log.d("taby","cancel")
+
+                        uploadPhoto(personCollection)
                 }
 
 
             }
+
 
         }
         catch (e : Exception){
@@ -161,6 +165,16 @@ class FSignup : Fragment() {
 
             }
         }
+    }
+    private fun uploadPhoto(personCollection : DocumentReference){
+        val imageRef = storageRef.reference.child(auth.uid!!)
+        selecturi?.let {
+              imageRef.putFile(it).addOnSuccessListener {
+              val uri = imageRef.downloadUrl
+                  personCollection.update("photoUri",uri.toString())
+          }
+        }
+
     }
 
     private fun showbar(){

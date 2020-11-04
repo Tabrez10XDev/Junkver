@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.junkver.R
-import com.example.junkver.data.Person
 import com.google.firebase.auth.FirebaseAuth
 
 /**

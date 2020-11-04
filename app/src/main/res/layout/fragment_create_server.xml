@@ -60,14 +60,15 @@
                 android:id="@+id/createtv"
                 android:layout_width="221dp"
                 android:layout_height="43dp"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/roundedbutton"
                 android:ems="10"
                 android:hint="Server Name"
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="@+id/textView3"
+                app:layout_constraintHorizontal_bias="0.623"
                 app:layout_constraintStart_toStartOf="@+id/textView3"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                app:layout_constraintTop_toBottomOf="@+id/createPhoto" />
 
             <Button
                 android:id="@+id/createbutton"
@@ -109,8 +110,45 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/createPhoto"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="16dp"
+                app:civ_border_color="#FFFFFF"
+                app:civ_border_width="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+            <Button
+                android:id="@+id/createPhotoB"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:background="@drawable/imageselector"
+                android:text="Select Photo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.501"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/createPhoto" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageView4"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                app:civ_border_color="#FFFFFF"
+                app:civ_border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="@+id/createPhoto"
+                app:layout_constraintEnd_toEndOf="@+id/createPhoto"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/createPhoto"
+                app:layout_constraintTop_toTopOf="@+id/createPhoto"
+                app:layout_constraintVertical_bias="1.0" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
 
 </FrameLayout>
+
