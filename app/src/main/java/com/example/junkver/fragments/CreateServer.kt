@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -168,10 +169,11 @@ class CreateServer : Fragment() {
         val imageRef = storageRef.reference.child(server.id)
         selectUri?.let { 
             val ref = imageRef
-                ref.putFile(it).addOnSuccessListener {
-                val downloadUri = ref.downloadUrl
-                    server.update("serverUri",downloadUri.toString())
+            ref.putFile(it).addOnSuccessListener {
+                it.storage.downloadUrl.addOnSuccessListener {download->
+                    server.update("serverUri",download.toString())
 
+                }
                 }
         }
     }

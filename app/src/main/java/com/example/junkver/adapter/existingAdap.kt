@@ -1,6 +1,7 @@
 package com.example.junkver.adapter
 
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,13 +77,14 @@ return oldItem == newItem
             chatlisthead.text = article.get("SID").toString()
             chatlistText.text = article.get("Last").toString()
             val photoUri = Uri.parse(article.get("serverUri").toString())
+            Log.d("photo",photoUri.toString())
             Glide.with(this).load(photoUri).into(chatlistphoto)
             val diff: Long = abs(date.time - currentdate.time)
             var day = diff/(24*60*60*1000)
             if(day < 1 ) {
                 chatTime.text = time.toString()
             }
-            else if(day > 1 && day < 7){
+            else if(day > 0 && day < 7){
                 chatTime.text = day.toString() + " day"
             }
             else{
