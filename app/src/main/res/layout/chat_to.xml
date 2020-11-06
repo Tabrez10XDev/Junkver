@@ -12,8 +12,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:background="#FFFFFF"
-        app:civ_border_color="#FFFFFF"
+        app:civ_border_color="#000000"
         app:civ_border_width="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -37,7 +36,6 @@
         android:text="computer"
         android:textSize="8sp"
         app:layout_constraintEnd_toEndOf="@+id/chatToTV"
-        app:layout_constraintStart_toStartOf="@+id/chatToTV"
         app:layout_constraintTop_toTopOf="@+id/chattoMV" />
 
     <TextView
@@ -48,8 +46,6 @@
         android:text="Time"
         android:textSize="6dp"
         app:layout_constraintEnd_toEndOf="@+id/chatToTV"
-        app:layout_constraintHorizontal_bias="0.522"
-        app:layout_constraintStart_toStartOf="@+id/chatToTV"
         app:layout_constraintTop_toBottomOf="@+id/chatToTV" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

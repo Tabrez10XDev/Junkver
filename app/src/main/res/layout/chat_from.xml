@@ -12,8 +12,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:background="#FFFFFF"
-        app:civ_border_color="#FFFFFF"
+        app:civ_border_color="#000000"
         app:civ_border_width="3dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,8 +38,6 @@
         android:layout_marginTop="8dp"
         android:text="computer"
         android:textSize="8sp"
-        app:layout_constraintEnd_toEndOf="@+id/chatTV"
-        app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="@+id/chatTV"
         app:layout_constraintTop_toTopOf="@+id/chatMV" />
 
@@ -51,7 +48,6 @@
         android:inputType="time"
         android:text="Time"
         android:textSize="6dp"
-        app:layout_constraintEnd_toEndOf="@+id/chatTV"
         app:layout_constraintStart_toStartOf="@+id/chatTV"
         app:layout_constraintTop_toBottomOf="@+id/chatTV" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,7 +27,7 @@
         </activity>
 
         <activity android:name=".app.Dashboard"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="stateHidden"
             ></activity>
     </application>
 

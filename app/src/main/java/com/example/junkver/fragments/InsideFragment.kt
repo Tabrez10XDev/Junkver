@@ -11,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.postDelayed
@@ -82,8 +84,20 @@ class InsideFragment : Fragment() {
         setUpRV()
 
 
+        val view = (activity as Dashboard).currentFocus
+        if(view != null){
+            val hide = (activity as Dashboard).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            hide.showSoftInput(sendText,0)
+        }
+        else{
+            (activity as Dashboard).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        }
         sendbutton.setOnClickListener {
-            sendMessage()
+
+            val txt = sendText.text
+            if(txt.isNotEmpty()){
+                sendMessage()
+            }
 
         }
         (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(true)
@@ -94,6 +108,7 @@ class InsideFragment : Fragment() {
                     var clipboard = (activity as Dashboard).getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     var clip = ClipData.newPlainText("label",joinID)
                     clipboard.setPrimaryClip(clip)
+                    Toast.makeText(activity,"Server ID copied in your clipboard, paste it in JoinID",Toast.LENGTH_LONG).show()
                     return@setOnMenuItemClickListener true
                 }
                 else->{
@@ -104,13 +119,14 @@ class InsideFragment : Fragment() {
         }
         chatRV.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             if(bottom < oldBottom) {
-            chatRV.scrollBy(0,oldBottom-bottom)
+                chatRV.scrollToPosition(adapter.itemCount - 1)
             }
 
         }
 
 
         subscribeToChannel()
+
 
     }
 
@@ -166,8 +182,11 @@ class InsideFragment : Fragment() {
 
     private fun setUpRV() {
         adapter = InsideAdap()
-        chatRV.layoutManager = LinearLayoutManager(activity)
+        val manager = LinearLayoutManager(activity)
+        manager.stackFromEnd = true
+        chatRV.layoutManager = manager
       chatRV.adapter = adapter
+
 
   }
 

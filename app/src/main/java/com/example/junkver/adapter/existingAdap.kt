@@ -84,7 +84,10 @@ return oldItem == newItem
             if(day < 1 ) {
                 chatTime.text = time.toString()
             }
-            else if(day > 0 && day < 7){
+            else if(day.toInt() == 1){
+                chatTime.text = "Yesterday"
+            }
+            else if(day > 1 && day < 7){
                 chatTime.text = day.toString() + " day"
             }
             else{

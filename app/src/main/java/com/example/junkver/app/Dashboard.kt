@@ -85,7 +85,7 @@ class Dashboard:AppCompatActivity() {
        toggle.syncState()
 //        verifyUser(auth)
         toolbar.inflateMenu(R.menu.inside_menu)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         var swipe = navView.getHeaderView(0)
         var swipename = swipe.findViewById<TextView>(R.id.swipename)
