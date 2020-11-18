@@ -27,8 +27,15 @@
         </activity>
 
         <activity android:name=".app.Dashboard"
-            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize"
             ></activity>
+        <activity android:name=".app.ChatActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTop"
+         >
+
+        </activity>
     </application>
 
 </manifest>

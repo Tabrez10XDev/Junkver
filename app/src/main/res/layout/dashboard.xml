@@ -2,10 +2,13 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frame1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFFFFF"
+    android:keepScreenOn="false"
+    android:layout_marginBottom="-64dp"
     tools:context=".app.Dashboard">
 
 
@@ -25,7 +28,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
-        android:layout_marginBottom="-64dp">
+        android:fitsSystemWindows="true"
+        android:layout_marginBottom="0dp">
 
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
@@ -58,8 +62,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:defaultNavHost="true"
-
-
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -75,6 +77,7 @@
                 android:id="@+id/nav_view"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+
                 android:layout_gravity="start"
 
                 app:headerLayout="@layout/nav_header_main"

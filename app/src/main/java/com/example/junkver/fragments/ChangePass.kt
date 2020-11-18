@@ -89,9 +89,7 @@ class ChangePass : Fragment() {
     override fun onResume() {
         super.onResume()
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
-
-        delayedHide(100)
+//        delayedHide(100)
 
     }
     private fun updatePass(){

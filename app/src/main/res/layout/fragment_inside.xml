@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
+    android:keepScreenOn="false"
     android:background="@drawable/gradient_bg_1"
     tools:context=".fragments.InsideFragment">
 
@@ -15,7 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:keepScreenOn="true"
         android:textColor="#33b5e5"
         android:textSize="50sp"
         android:textStyle="bold" />
@@ -25,6 +26,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/gradient_bg_1"
         android:fitsSystemWindows="true">
 
         <LinearLayout
@@ -42,21 +44,6 @@
             android:layout_height="match_parent">
 
 
-            <EditText
-                android:id="@+id/sendText"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginBottom="16dp"
-                android:ems="10"
-                android:hint="Enter Text"
-                android:inputType="textLongMessage|textAutoCorrect|text|textAutoComplete"
-                android:paddingEnd="5dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/sendbutton"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chatRV" />
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/chatRV"
                 android:layout_width="0dp"
@@ -70,20 +57,57 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <EditText
+                android:id="@+id/sendText"
+                android:layout_width="361dp"
+                android:layout_height="45dp"
+                android:ems="10"
+                android:hint="Enter Text"
+                android:inputType="textLongMessage|textAutoCorrect|text|textAutoComplete"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/sendbutton"
+                app:layout_constraintStart_toStartOf="parent" />
+
             <ImageButton
                 android:id="@+id/sendbutton"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
-                android:paddingEnd="5dp"
                 android:src="@android:drawable/ic_menu_send"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chatRV" />
+                app:layout_constraintEnd_toEndOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
 
 </FrameLayout>
+
+<!--<ImageButton-->
+<!--android:id="@+id/sendbutton"-->
+<!--android:layout_width="45dp"-->
+<!--android:layout_height="45dp"-->
+<!--android:layout_marginEnd="8dp"-->
+<!--android:layout_marginBottom="16dp"-->
+<!--android:paddingEnd="5dp"-->
+<!--android:src="@android:drawable/ic_menu_send"-->
+<!--app:layout_constraintBottom_toBottomOf="parent"-->
+<!--app:layout_constraintEnd_toEndOf="parent"-->
+<!--app:layout_constraintTop_toBottomOf="@+id/chatRV"-->
+<!--app:layout_constraintVertical_bias="0.0" />-->
+
+<!--<EditText-->
+<!--android:id="@+id/sendText"-->
+<!--android:layout_width="0dp"-->
+<!--android:layout_height="50dp"-->
+<!--android:layout_marginBottom="16dp"-->
+<!--android:ems="10"-->
+<!--android:hint="Enter Text"-->
+<!--android:inputType="textLongMessage|textAutoCorrect|text|textAutoComplete"-->
+<!--android:paddingEnd="5dp"-->
+<!--app:layout_constraintBottom_toBottomOf="parent"-->
+<!--app:layout_constraintEnd_toStartOf="@+id/sendbutton"-->
+<!--app:layout_constraintHorizontal_bias="0.0"-->
+<!--app:layout_constraintStart_toStartOf="parent"-->
+<!--app:layout_constraintTop_toBottomOf="@+id/chatRV"-->
+<!--app:layout_constraintVertical_bias="0.0" />-->

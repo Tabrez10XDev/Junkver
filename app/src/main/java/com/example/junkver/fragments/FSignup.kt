@@ -139,20 +139,16 @@ class FSignup : Fragment() {
 
     private fun savePerson(username : String) = CoroutineScope(Dispatchers.IO).launch {
         try {
-
-            Log.d("taby","inside")
             val time = java.sql.Timestamp(System.currentTimeMillis())
             val user = hashMapOf(
                 "UID" to auth.uid,
                 "username" to username,
                 "photoUri" to ""
-
             )
             auth.uid?.let {
                 var personCollection = fireStore.collection("persons").document(auth.uid!!)
                     personCollection.set(user as Map<String, Any>).addOnFailureListener {
                 }.addOnSuccessListener {
-
                         uploadPhoto(personCollection)
                 }
 
@@ -228,7 +224,6 @@ class FSignup : Fragment() {
             auth.currentUser?.let { user ->
                 val profileUpdate = UserProfileChangeRequest.Builder()
                     .setDisplayName(username)
-                    .setPhotoUri(selecturi)
                     .build()
                 CoroutineScope(Dispatchers.IO).launch {
                     try {

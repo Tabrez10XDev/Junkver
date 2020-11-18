@@ -2,9 +2,13 @@ package com.example.junkver.app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.junkver.R
@@ -47,7 +51,7 @@ class Login : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        delayedHide(100)
+//        delayedHide(100)
     }
 
     lateinit var auth: FirebaseAuth
@@ -55,6 +59,7 @@ class Login : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.FullscreenTheme)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         super.onCreate(savedInstanceState)
         auth = FirebaseAuth.getInstance()
@@ -64,6 +69,7 @@ class Login : AppCompatActivity() {
         isFullscreen = true
         fullscreenContent = findViewById(R.id.fullscreen_content)
         fullscreenContentControls = findViewById(R.id.fullscreen_content_controls)
+
 
     }
 
@@ -75,7 +81,7 @@ class Login : AppCompatActivity() {
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
 
-        delayedHide(100)
+//        delayedHide(100)
     }
 
 

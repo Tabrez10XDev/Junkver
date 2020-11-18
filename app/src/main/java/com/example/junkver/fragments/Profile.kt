@@ -22,6 +22,8 @@ import com.example.junkver.app.Login
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.coroutines.CoroutineScope
@@ -53,6 +55,7 @@ class Profile : Fragment() {
 
 
 
+    lateinit var fireStore : FirebaseFirestore
     private var fullscreenContent: View? = null
     private var fullscreenContentControls: View? = null
 
@@ -72,15 +75,22 @@ class Profile : Fragment() {
 
         visible = true
 
+        fireStore = FirebaseFirestore.getInstance()
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
         auth = FirebaseAuth.getInstance()
-        selecturi = auth.currentUser!!.photoUrl
-        if(selecturi!= null){
-            profbutton.alpha = 0f
-        }
+
+        selecturi = (activity as Dashboard).selectUri
         hidebar()
+
+        if(selecturi != null){
+            profbutton.alpha = 0f
+            profphoto.alpha = 1f
+
+        }
         Glide.with(this).load(selecturi).into(profphoto)
+//        subscribeToDp()
+        Log.d("shameer","shamiii")
         val email = auth.currentUser?.email
         profmail.setText(email)
         profuser.setText(auth.currentUser?.displayName)
@@ -110,6 +120,9 @@ class Profile : Fragment() {
 
     }
 
+
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -122,6 +135,36 @@ class Profile : Fragment() {
 
         }
     }
+
+//    private fun subscribeToDp(){
+//
+//        val channel = fireStore.collection("persons").document(auth.uid.toString()).addSnapshotListener {
+//                documentSnapshot, firebaseFirestoreException ->
+//
+//            firebaseFirestoreException?.let {
+//
+//                Log.d("shameer",it.message)
+//                return@addSnapshotListener
+//            }
+//
+//            documentSnapshot?.let {document->
+//                val data = document.data?.get("photoUri").toString()
+//                Log.d("shameer","help "+data)
+//
+//                selecturi = Uri.parse(data)
+//                if(selecturi!= null){
+//                    profbutton.alpha = 0f
+//                }
+//                hidebar()
+//
+//                Glide.with(this).load(selecturi).into(profphoto)
+//
+//
+//
+//            }
+//        }
+//
+//    }
 
     private fun showbar(){
         profbar.visibility = View.VISIBLE
@@ -202,7 +245,7 @@ class Profile : Fragment() {
         }
 
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        delayedHide(100)
+//        delayedHide(100)
 
     }
 

@@ -182,7 +182,7 @@ class CreateServer : Fragment() {
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
 
-        delayedHide(100)
+//        delayedHide(100)
     }
 
     private fun showbar(){

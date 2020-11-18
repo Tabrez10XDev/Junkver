@@ -4,26 +4,21 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.*
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.junkver.R
 import com.example.junkver.adapter.existingAdap
 import com.example.junkver.app.Dashboard
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QueryDocumentSnapshot
 import kotlinx.android.synthetic.main.dashboard_bar.*
 import kotlinx.android.synthetic.main.fragment_existing.*
 import kotlinx.coroutines.*
 import java.lang.Runnable
-import java.lang.StringBuilder
 
 class Exisiting : Fragment() {
     private val hideHandler = Handler()
@@ -45,7 +40,7 @@ class Exisiting : Fragment() {
         fullscreenContentControls?.visibility = View.VISIBLE
     }
     private var visible: Boolean = false
-    private val hideRunnable = Runnable { hide() }
+//    private val hideRunnable = Runnable { hide() }
 
 
     private var fullscreenContent: View? = null
@@ -65,8 +60,6 @@ class Exisiting : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.toolbar?.title = ""
-        (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(false)
 
         fireStore = FirebaseFirestore.getInstance()
         val col = fireStore.collection("persons")
@@ -79,6 +72,11 @@ class Exisiting : Fragment() {
             }
             (activity as Dashboard).num = 1
             findNavController().navigate(R.id.action_existing_to_insideFragment,bundle)
+
+//            val intent = Intent(activity,ChatActivity::class.java)
+//            intent.putExtra("bundle",bundle)
+//            startActivity(intent)
+
         }
         auth = FirebaseAuth.getInstance()
 
@@ -137,28 +135,28 @@ class Exisiting : Fragment() {
             }
     }
 
-    private fun retrievePersons() = CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val sb : MutableList<Map<String,Any>> = arrayListOf()
-            val querySnapshot = fireStore.collection("persons").get().addOnFailureListener() {
-                Log.d("tabby", it.message)
-
-            }.addOnSuccessListener {documents->
-                for(document in documents) {
-                    Log.d("low", "${document.id} => ${document.data}")
-                    sb.add(document.data)
-                }
-                existingAdap.differ.submitList(sb)
-            }
-
-        }
-        catch (e : Exception){
-            withContext(Dispatchers.Main){
-                Toast.makeText(activity,"Error",Toast.LENGTH_LONG).show()
-
-            }
-        }
-    }
+//    private fun retrievePersons() = CoroutineScope(Dispatchers.IO).launch {
+//        try {
+//            val sb : MutableList<Map<String,Any>> = arrayListOf()
+//            val querySnapshot = fireStore.collection("persons").get().addOnFailureListener() {
+//                Log.d("tabby", it.message)
+//
+//            }.addOnSuccessListener {documents->
+//                for(document in documents) {
+//                    Log.d("low", "${document.id} => ${document.data}")
+//                    sb.add(document.data)
+//                }
+//                existingAdap.differ.submitList(sb)
+//            }
+//
+//        }
+//        catch (e : Exception){
+//            withContext(Dispatchers.Main){
+//                Toast.makeText(activity,"Error",Toast.LENGTH_LONG).show()
+//
+//            }
+//        }
+//    }
 
 //    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 //        inflater.inflate(R.menu.inside_menu, menu)
@@ -181,7 +179,7 @@ class Exisiting : Fragment() {
         (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(false)
 
 
-        delayedHide(100)
+//        delayedHide(100)
 
     }
 
@@ -190,7 +188,7 @@ class Exisiting : Fragment() {
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
         activity?.window?.decorView?.systemUiVisibility = 0
-        show()
+//        show()
     }
 
     override fun onDestroy() {
@@ -209,23 +207,23 @@ class Exisiting : Fragment() {
         hideHandler.postDelayed(hidePart2Runnable, UI_ANIMATION_DELAY.toLong())
     }
 
-    @Suppress("InlinedApi")
-    private fun show() {
-        fullscreenContent?.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        visible = true
+//    @Suppress("InlinedApi")
+//    private fun show() {
+//        fullscreenContent?.systemUiVisibility =
+//            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+//                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//        visible = true
+//
+//        hideHandler.removeCallbacks(hidePart2Runnable)
+//        hideHandler.postDelayed(showPart2Runnable, UI_ANIMATION_DELAY.toLong())
+//        (activity as? AppCompatActivity)?.supportActionBar?.show()
+//    }
 
-        hideHandler.removeCallbacks(hidePart2Runnable)
-        hideHandler.postDelayed(showPart2Runnable, UI_ANIMATION_DELAY.toLong())
-        (activity as? AppCompatActivity)?.supportActionBar?.show()
-    }
-
-
-    private fun delayedHide(delayMillis: Int) {
-        hideHandler.removeCallbacks(hideRunnable)
-        hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
-    }
+//
+//    private fun delayedHide(delayMillis: Int) {
+//        hideHandler.removeCallbacks(hideRunnable)
+//        hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
+//    }
 
     companion object {
 

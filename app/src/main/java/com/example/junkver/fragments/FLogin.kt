@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.junkver.R
@@ -31,11 +33,7 @@ class FLogin : Fragment() {
 
     @Suppress("InlinedApi")
     private val hidePart2Runnable = Runnable {
-        // Delayed removal of status and navigation bar
 
-        // Note that some of these constants are new as of API 16 (Jelly Bean)
-        // and API 19 (KitKat). It is safe to use them, as they are inlined
-        // at compile-time and do nothing on earlier devices.
         val flags =
             View.SYSTEM_UI_FLAG_LOW_PROFILE or
                     View.SYSTEM_UI_FLAG_FULLSCREEN or
@@ -47,7 +45,6 @@ class FLogin : Fragment() {
         (activity as? AppCompatActivity)?.supportActionBar?.hide()
     }
     private val showPart2Runnable = Runnable {
-        // Delayed display of UI elements
         fullscreenContentControls?.visibility = View.VISIBLE
     }
     private var visible: Boolean = false
@@ -74,36 +71,30 @@ class FLogin : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         visible = true
-
         fullscreenContent = view.findViewById(R.id.fullscreen_content)
         fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
-        // Set up the user interaction to manually show or hide the system UI.
         auth = FirebaseAuth.getInstance()
         hidebar()
 
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
 
                 blogin.setOnClickListener {
-                    val view = activity?.currentFocus
-                    view?.let { v ->
-                        val imm =
-                            activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                        imm?.hideSoftInputFromWindow(v.windowToken, 0)
-                    }
+
+                    hideKeyboard()
                     loginUser()
                 }
-        bsignup.setOnClickListener {
-            val view = activity?.currentFocus
-            view?.let { v ->
-                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.hideSoftInputFromWindow(v.windowToken, 0)
-            }
-//            startActivity(Intent(activity, SignUp::class.java))
-            findNavController().navigate(R.id.action_FLogin_to_FSignup)
-//            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 
+        bsignup.setOnClickListener {
+         hideKeyboard()
+            findNavController().navigate(R.id.action_FLogin_to_FSignup)
+
+        }
+    }
+
+    private fun hideKeyboard(){
+        val view = activity?.currentFocus
+        view?.let { v ->
+            val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(v.windowToken, 0)
         }
     }
 

@@ -1,6 +1,5 @@
 package com.example.junkver.fragments
 
-import android.R.attr.label
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -11,11 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.view.postDelayed
+import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.junkver.R
@@ -70,6 +67,7 @@ class InsideFragment : Fragment() {
     lateinit var joinID : String
     lateinit var fireStore : FirebaseFirestore
     lateinit var auth : FirebaseAuth
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         visible = true
@@ -79,19 +77,17 @@ class InsideFragment : Fragment() {
         val sid = arguments?.getString("SID")
         joinID = arguments?.getString("joinID").toString()
         (activity as Dashboard).toolbar.title = sid
+
         fireStore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         setUpRV()
 
 
-        val view = (activity as Dashboard).currentFocus
-        if(view != null){
-            val hide = (activity as Dashboard).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            hide.showSoftInput(sendText,0)
+
+        sendText.setOnClickListener {
+            (activity as Dashboard).clicked = true
         }
-        else{
-            (activity as Dashboard).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        }
+
         sendbutton.setOnClickListener {
 
             val txt = sendText.text
@@ -126,6 +122,7 @@ class InsideFragment : Fragment() {
 
 
         subscribeToChannel()
+
 
 
     }
@@ -190,28 +187,7 @@ class InsideFragment : Fragment() {
 
   }
 
-//    class ChatFromItem : Item<ViewHolder>(){
-//        override fun getLayout(): Int {
-//            return R.layout.chat_from
-//        }
-//
-//        override fun bind(viewHolder: ViewHolder, position: Int) {
-//        }
-//
-//    }
-//
-//    class ChatToItem(val text : String) : Item<ViewHolder>(){
-//        override fun getLayout(): Int {
-//            return R.layout.chat_to
-//        }
-//
-//        override fun bind(viewHolder: ViewHolder, position: Int) {
-//            viewHolder.itemView.apply {
-//                chatToTV.text = text
-//            }
-//        }
-//
-//    }
+
 
 
 
@@ -221,7 +197,7 @@ class InsideFragment : Fragment() {
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         Log.d("poda","chillman")
 
-        delayedHide(100)
+//        delayedHide(100)
     }
 
     override fun onPause() {
@@ -267,11 +243,9 @@ class InsideFragment : Fragment() {
 
     companion object {
 
-        private const val AUTO_HIDE = true
 
 
-        private const val AUTO_HIDE_DELAY_MILLIS = 3000
 
-        private const val UI_ANIMATION_DELAY = 300
+        private const val UI_ANIMATION_DELAY = 50
     }
 }
