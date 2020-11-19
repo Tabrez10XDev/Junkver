@@ -5,8 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -23,27 +21,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import de.hdodenhof.circleimageview.CircleImageView
 
 class Dashboard:AppCompatActivity() {
-    private lateinit var fullscreenContent: TextView
-    private lateinit var fullscreenContentControls: LinearLayout
-    private val hideHandler = Handler()
-    @SuppressLint("InlinedApi")
-    private val hidePart2Runnable = Runnable {
 
-        fullscreenContent.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LOW_PROFILE or
-                    View.SYSTEM_UI_FLAG_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-    }
-    private val showPart2Runnable = Runnable {
-        supportActionBar?.show()
-        fullscreenContentControls.visibility = View.VISIBLE
-    }
     lateinit var fireStore : FirebaseFirestore
-    private var isFullscreen: Boolean = false
-//    private var hideRunnable = Runnable { hide() }
 
 
     var clicked = false
@@ -63,11 +42,8 @@ class Dashboard:AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         fireStore = FirebaseFirestore.getInstance()
-        isFullscreen = true
 
-        fullscreenContent = findViewById(R.id.fullscreen_content)
 
-        fullscreenContentControls = findViewById(R.id.fullscreen_content_controls)
 
         auth = FirebaseAuth.getInstance()
         toolbar.inflateMenu(R.menu.inside_menu)
@@ -128,10 +104,6 @@ class Dashboard:AppCompatActivity() {
 
         }
     }
-    override fun onResume() {
-        super.onResume()
-//        delayedHide(100)
-    }
 
 
 
@@ -142,26 +114,10 @@ class Dashboard:AppCompatActivity() {
 
 
 
-//    private fun verifyUser(auth : FirebaseAuth){
-//        val uid = auth.uid
-//        if(uid == null){
-//            val intent = Intent(this, Login::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-//            startActivity(intent)
-//        }
-//    }
 
 
 
 
-
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-
-
-//        delayedHide(100)
-    }
 
     private fun subscribeToDp(){
         fireStore.collection("persons").document(auth.uid.toString()).addSnapshotListener {
@@ -193,27 +149,5 @@ class Dashboard:AppCompatActivity() {
 
 
 
-    private fun hide() {
-        supportActionBar?.hide()
-        fullscreenContentControls.visibility = View.GONE
-        isFullscreen = false
-        Log.d("Lj","hide")
 
-        hideHandler.removeCallbacks(showPart2Runnable)
-        hideHandler.postDelayed(hidePart2Runnable, UI_ANIMATION_DELAY.toLong())
-    }
-
-
-
-//
-//    private fun delayedHide(delayMillis: Int) {
-//        hideHandler.removeCallbacks(hideRunnable)
-//        hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
-//    }
-
-    companion object {
-
-
-        private const val UI_ANIMATION_DELAY = 0
-    }
 }

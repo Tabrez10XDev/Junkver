@@ -167,7 +167,7 @@ class FLogin : Fragment() {
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
-        delayedHide(100)
+//        delayedHide(100)
     }
 
     override fun onPause() {

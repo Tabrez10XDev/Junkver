@@ -5,10 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
-import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.junkver.R
@@ -59,7 +56,6 @@ class Login : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.FullscreenTheme)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         super.onCreate(savedInstanceState)
         auth = FirebaseAuth.getInstance()

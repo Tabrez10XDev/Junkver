@@ -59,11 +59,14 @@
 
             <EditText
                 android:id="@+id/sendText"
-                android:layout_width="361dp"
-                android:layout_height="45dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:ems="10"
                 android:hint="Enter Text"
-                android:inputType="textLongMessage|textAutoCorrect|text|textAutoComplete"
+                android:inputType="textAutoCorrect|textMultiLine|text|textAutoComplete"
+                android:maxLength="90"
+                android:maxLines="15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/sendbutton"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -72,6 +75,7 @@
                 android:id="@+id/sendbutton"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
+                android:layout_marginEnd="4dp"
                 android:src="@android:drawable/ic_menu_send"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />

@@ -113,14 +113,33 @@ class InsideFragment : Fragment() {
 
             }
         }
-        chatRV.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
-            if(bottom < oldBottom) {
-                chatRV.scrollToPosition(adapter.itemCount - 1)
-            }
 
+
+
+
+        sendText.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                Log.d("shameeer","onFoc")
+
+            }
+            else {
+                Log.d("shameeer","off")
+
+            }
         }
 
+        chatRV.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
 
+
+
+
+            if(bottom < oldBottom){
+                Log.d("shameeer","on")
+                chatRV.postDelayed(Runnable {
+                    chatRV.scrollToPosition(chatRV.adapter!!.itemCount - 1)
+                },100)
+            }
+        }
         subscribeToChannel()
 
 

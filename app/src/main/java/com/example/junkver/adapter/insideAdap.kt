@@ -85,7 +85,7 @@ class InsideAdap : RecyclerView.Adapter<InsideAdap.ToViewHolder>() {
         when(holder.itemViewType){
             11->{
                 holder.itemView.apply {
-                    val formatter = SimpleDateFormat("HH:mm:ss")
+                    val formatter = SimpleDateFormat("HH:mm")
                     val time = formatter.format(txt.get("createdAt"))
                     chatToTV.text = txt.get("text").toString()
                     chatToName.text = txt.get("username").toString()

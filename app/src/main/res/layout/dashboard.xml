@@ -8,40 +8,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFFFFF"
     android:keepScreenOn="false"
-    android:layout_marginBottom="-64dp"
+    android:layout_marginBottom="0dp"
     tools:context=".app.Dashboard">
-
-
-    <TextView
-        android:id="@+id/fullscreen_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:keepScreenOn="true"
-        android:textColor="#33b5e5"
-        android:textSize="50sp"
-        android:textStyle="bold" />
-
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF"
-        android:fitsSystemWindows="true"
-        android:layout_marginBottom="0dp">
-
-        <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="?metaButtonBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
-
-        </LinearLayout>
 
         <androidx.drawerlayout.widget.DrawerLayout
             android:id="@+id/drawer_layout"
@@ -86,6 +54,5 @@
         </androidx.drawerlayout.widget.DrawerLayout>
 
 
-    </FrameLayout>
 
 </FrameLayout>

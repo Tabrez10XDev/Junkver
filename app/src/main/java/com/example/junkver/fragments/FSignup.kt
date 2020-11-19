@@ -278,7 +278,7 @@ val intent = Intent(activity, Dashboard::class.java)
 //        bphoto.alpha = 1f
 
 
-        delayedHide(100)
+//        delayedHide(100)
     }
 
     override fun onPause() {
