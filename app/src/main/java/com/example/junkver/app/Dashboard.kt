@@ -27,6 +27,8 @@ class Dashboard:AppCompatActivity() {
 
     var clicked = false
 
+    var SID = ""
+    var joinID = ""
     var num = 0
     lateinit var auth : FirebaseAuth
     var selectUri : Uri?= null
@@ -98,8 +100,17 @@ class Dashboard:AppCompatActivity() {
 
             }
             else {
-                findNavController(R.id.nav_host_fragment).navigate(R.id.action_insideFragment_to_existing)
-                num = 0
+                if(num == 1) {
+                    findNavController(R.id.nav_host_fragment).navigate(R.id.action_insideFragment_to_existing)
+                }
+                else if (num ==2){
+                    val bundle = Bundle().apply {
+                        putString("joinID",joinID)
+                        putString("SID",SID)
+                    }
+                    findNavController(R.id.nav_host_fragment).navigate(R.id.action_groupInfo_to_insideFragment,bundle)
+                }
+                    num -=1
             }
 
         }

@@ -63,6 +63,9 @@
         <action
             android:id="@+id/action_insideFragment_self"
             app:destination="@id/insideFragment" />
+        <action
+            android:id="@+id/action_insideFragment_to_groupInfo"
+            app:destination="@id/groupInfo" />
     </fragment>
     <fragment
         android:id="@+id/createServer"
@@ -75,5 +78,14 @@
         <action
             android:id="@+id/action_createServer_to_existing"
             app:destination="@id/existing" />
+    </fragment>
+    <fragment
+        android:id="@+id/groupInfo"
+        android:name="com.example.junkver.fragments.groupInfo"
+        android:label="fragment_group_info"
+        tools:layout="@layout/fragment_group_info" >
+        <action
+            android:id="@+id/action_groupInfo_to_insideFragment"
+            app:destination="@id/insideFragment" />
     </fragment>
 </navigation>

@@ -277,8 +277,6 @@ val intent = Intent(activity, Dashboard::class.java)
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 //        bphoto.alpha = 1f
 
-
-//        delayedHide(100)
     }
 
     override fun onPause() {

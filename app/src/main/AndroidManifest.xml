@@ -21,14 +21,13 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity android:name=".app.Dashboard"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="stateHidden"
             ></activity>
 
     </application>

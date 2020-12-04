@@ -100,7 +100,7 @@
                 android:layout_width="0dp"
                 android:layout_height="26dp"
                 android:layout_marginTop="36dp"
-                android:text="Regitered ? Click here "
+                android:text="Registered ? Click here "
                 android:textAlignment="center"
                 android:textColor="#234159"
                 android:textSize="14sp"

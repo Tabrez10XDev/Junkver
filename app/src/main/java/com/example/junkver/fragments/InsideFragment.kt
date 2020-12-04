@@ -14,15 +14,24 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.junkver.R
 import com.example.junkver.adapter.InsideAdap
 import com.example.junkver.app.Dashboard
+import com.example.junkver.data.NotificationData
+import com.example.junkver.data.PushNotification
+import com.example.junkver.data.RetrofitInstance
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.gson.Gson
+import com.squareup.okhttp.Dispatcher
 import kotlinx.android.synthetic.main.dashboard_bar.*
 import kotlinx.android.synthetic.main.fragment_inside.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 /**
@@ -32,24 +41,7 @@ import kotlinx.android.synthetic.main.fragment_inside.*
 class InsideFragment : Fragment() {
     private val hideHandler = Handler()
 
-    @Suppress("InlinedApi")
-    private val hidePart2Runnable = Runnable {
 
-        val flags =
-            View.SYSTEM_UI_FLAG_LOW_PROFILE or
-                    View.SYSTEM_UI_FLAG_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        activity?.window?.decorView?.systemUiVisibility = flags
-        (activity as? AppCompatActivity)?.supportActionBar?.hide()
-    }
-    private val showPart2Runnable = Runnable {
-        fullscreenContentControls?.visibility = View.VISIBLE
-    }
-    private var visible: Boolean = false
-    private val hideRunnable = Runnable { hide() }
 
 
 
@@ -70,9 +62,6 @@ class InsideFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        visible = true
-        fullscreenContent = view.findViewById(R.id.fullscreen_content)
-        fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
 
         val sid = arguments?.getString("SID")
         joinID = arguments?.getString("joinID").toString()
@@ -84,6 +73,16 @@ class InsideFragment : Fragment() {
 
 
 
+        (activity as Dashboard).toolbar.setOnClickListener {
+            (activity as Dashboard).num = 2
+            val bundle = Bundle().apply {
+                putString("joinID",joinID)
+            }
+            (activity as Dashboard).joinID = joinID
+            (activity as Dashboard).SID = sid.toString()
+            findNavController().navigate(R.id.action_insideFragment_to_groupInfo,bundle)
+        }
+
         sendText.setOnClickListener {
             (activity as Dashboard).clicked = true
         }
@@ -92,7 +91,14 @@ class InsideFragment : Fragment() {
 
             val txt = sendText.text
             if(txt.isNotEmpty()){
+                PushNotification(
+                    NotificationData("hey","naa Koopdala"),
+                    "/Topic"
+                ).also {
+                    sendNotification(it)
+                }
                 sendMessage()
+                adjustRV()
             }
 
         }
@@ -117,29 +123,7 @@ class InsideFragment : Fragment() {
 
 
 
-        sendText.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus){
-                Log.d("shameeer","onFoc")
 
-            }
-            else {
-                Log.d("shameeer","off")
-
-            }
-        }
-
-        chatRV.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
-
-
-
-
-            if(bottom < oldBottom){
-                Log.d("shameeer","on")
-                chatRV.postDelayed(Runnable {
-                    chatRV.scrollToPosition(chatRV.adapter!!.itemCount - 1)
-                },100)
-            }
-        }
         subscribeToChannel()
 
 
@@ -147,7 +131,27 @@ class InsideFragment : Fragment() {
     }
 
 
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try{
+            val response = RetrofitInstance.api.postNotification(notification)
+            if(response.isSuccessful){
+                Log.d("Response", Gson().toJson(response))
+            }
+            else{
+                Log.d("Response",response.errorBody().toString())
+            }
+        }
+        catch(e : Exception){
+            Toast.makeText(activity,e.message,Toast.LENGTH_LONG).show()
+        }
 
+    }
+
+    private fun adjustRV(){
+        chatRV.postDelayed(Runnable {
+            chatRV.scrollToPosition(chatRV.adapter!!.itemCount - 1)
+        },100)
+    }
 
     private fun subscribeToChannel(){
 
@@ -190,7 +194,7 @@ class InsideFragment : Fragment() {
             //TOODO
              }
             .addOnSuccessListener {
-            fireStore.collection("servers").document(joinID).update("createdAt",time)
+                fireStore.collection("servers").document(joinID).update("createdAt",time)
                 fireStore.collection("servers").document(joinID).update("Last",txt)
 
             }
@@ -224,7 +228,6 @@ class InsideFragment : Fragment() {
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
         activity?.window?.decorView?.systemUiVisibility = 0
-        show()
     }
 
     override fun onDestroy() {
@@ -235,36 +238,7 @@ class InsideFragment : Fragment() {
 
 
 
-    private fun hide() {
-        fullscreenContentControls?.visibility = View.GONE
-        visible = false
-
-        hideHandler.removeCallbacks(showPart2Runnable)
-        hideHandler.postDelayed(hidePart2Runnable, UI_ANIMATION_DELAY.toLong())
-    }
-
-    @Suppress("InlinedApi")
-    private fun show() {
-        fullscreenContent?.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        visible = true
-
-        hideHandler.removeCallbacks(hidePart2Runnable)
-        hideHandler.postDelayed(showPart2Runnable, UI_ANIMATION_DELAY.toLong())
-        (activity as? AppCompatActivity)?.supportActionBar?.show()
-    }
-
-    private fun delayedHide(delayMillis: Int) {
-        hideHandler.removeCallbacks(hideRunnable)
-        hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
-    }
-
-    companion object {
 
 
 
-
-        private const val UI_ANIMATION_DELAY = 50
-    }
 }

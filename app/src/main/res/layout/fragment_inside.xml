@@ -47,11 +47,13 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/chatRV"
                 android:layout_width="0dp"
-                android:layout_height="615dp"
+                android:layout_height="0dp"
                 android:layout_marginTop="64dp"
+                android:layout_marginBottom="16dp"
                 android:maxHeight="615dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/sendText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +67,6 @@
                 android:ems="10"
                 android:hint="Enter Text"
                 android:inputType="textAutoCorrect|textMultiLine|text|textAutoComplete"
-                android:maxLength="90"
                 android:maxLines="15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/sendbutton"
@@ -79,6 +80,8 @@
                 android:src="@android:drawable/ic_menu_send"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
