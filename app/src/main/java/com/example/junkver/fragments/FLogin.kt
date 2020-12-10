@@ -137,17 +137,7 @@ class FLogin : Fragment() {
     }
 
 
-    override fun onResume() {
-        super.onResume()
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
-    }
-
-    override fun onPause() {
-        super.onPause()
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
-    }
 
 
 

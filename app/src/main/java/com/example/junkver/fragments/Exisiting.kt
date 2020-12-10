@@ -23,8 +23,7 @@ import java.lang.Runnable
 class Exisiting : Fragment() {
 
 
-    private var fullscreenContent: View? = null
-    private var fullscreenContentControls: View? = null
+
 
     lateinit var auth : FirebaseAuth
     lateinit var existingAdap: existingAdap
@@ -59,8 +58,7 @@ class Exisiting : Fragment() {
         }
         auth = FirebaseAuth.getInstance()
 
-        fullscreenContent = view.findViewById(R.id.fullscreen_content)
-        fullscreenContentControls = view.findViewById(R.id.fullscreen_content_controls)
+
 
         subscribeToServers()
 
@@ -129,30 +127,6 @@ class Exisiting : Fragment() {
             layoutManager = LinearLayoutManager(activity)
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(false)
-
-
-
-    }
-
-    override fun onPause() {
-        super.onPause()
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
-        activity?.window?.decorView?.systemUiVisibility = 0
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        fullscreenContent = null
-        fullscreenContentControls = null
-    }
-
-
 
 
 

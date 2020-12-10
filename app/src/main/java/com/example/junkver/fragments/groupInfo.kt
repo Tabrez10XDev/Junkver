@@ -46,13 +46,9 @@ class groupInfo : Fragment() {
         hidebar()
         fireStore = FirebaseFirestore.getInstance()
 
-        groupTV.isEnabled = false
 
-        groupEnable.setOnClickListener {
-            groupTV.isEnabled = true
-        }
 
-        groupInfoPhotoBtn.setOnClickListener {
+        groupInfoPhotoBtn1.setOnClickListener {
 
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.type = "image/*"
@@ -64,16 +60,18 @@ class groupInfo : Fragment() {
 
         }
         joinID = arguments?.getString("joinID").toString()
+        val sid = arguments?.getString("SID").toString()
+        groupTV1.setText(sid)
 
-        groupButton.setOnClickListener {
+        groupButton1.setOnClickListener {
             val view = activity?.currentFocus
             view?.let { v ->
                 val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 imm?.hideSoftInputFromWindow(v.windowToken, 0)
             }
-            if(groupTV.text.isNotEmpty()){
+            if(groupTV1.text.isNotEmpty()){
                 showbar()
-                updateGroupInfo(joinID,groupTV.text.toString())
+                updateGroupInfo(joinID,groupTV1.text.toString())
 
 
             }
@@ -93,7 +91,7 @@ class groupInfo : Fragment() {
         if(requestCode == 7 && resultCode == Activity.RESULT_OK && data != null ){
             selecturi = data.data
             val bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, selecturi)
-            groupLogo.setImageBitmap(bitmap)
+            groupLogo1.setImageBitmap(bitmap)
 
         }
     }
@@ -127,14 +125,14 @@ class groupInfo : Fragment() {
     }
 
     private fun showbar(){
-        groupBar.visibility = View.VISIBLE
-        groupButton.isEnabled = false
+        groupBar1.visibility = View.VISIBLE
+        groupButton1.isEnabled = false
 
     }
 
     private fun hidebar(){
-        groupBar.visibility = View.INVISIBLE
-        groupButton.isEnabled = true
+        groupBar1.visibility = View.INVISIBLE
+        groupButton1.isEnabled = true
     }
 
     override fun onResume() {

@@ -4,9 +4,7 @@ import com.example.junkver.util.Constants.Companion.CONTENT_TYPE
 import com.example.junkver.util.Constants.Companion.SERVER_KEY
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Headers
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface NotificationAPI {
 
@@ -15,5 +13,10 @@ interface NotificationAPI {
     suspend fun postNotification(
         @Body notification : PushNotification
     ) : Response<ResponseBody>
+
+
+
+
+
 
 }

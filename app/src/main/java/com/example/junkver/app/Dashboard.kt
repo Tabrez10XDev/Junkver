@@ -15,9 +15,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.example.junkver.R
+import com.example.junkver.fragments.TOPIC
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import de.hdodenhof.circleimageview.CircleImageView
 
 class Dashboard:AppCompatActivity() {
@@ -35,7 +38,6 @@ class Dashboard:AppCompatActivity() {
 
     lateinit var  swipephoto : CircleImageView
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -60,6 +62,9 @@ class Dashboard:AppCompatActivity() {
 
         drawerLayout.addDrawerListener(toggle)
        toggle.syncState()
+
+
+        FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)
 
         var swipe = navView.getHeaderView(0)
         var swipename = swipe.findViewById<TextView>(R.id.swipename)

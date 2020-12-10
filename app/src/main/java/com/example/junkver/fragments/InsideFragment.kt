@@ -25,6 +25,7 @@ import com.example.junkver.data.RetrofitInstance
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.gson.Gson
 import com.squareup.okhttp.Dispatcher
 import kotlinx.android.synthetic.main.dashboard_bar.*
@@ -33,20 +34,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+const val TOPIC = "/topics/myTopic"
 
-/**
- * An example full-screen fragment that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
+
 class InsideFragment : Fragment() {
-    private val hideHandler = Handler()
 
 
 
-
-
-    private var fullscreenContent: View? = null
-    private var fullscreenContentControls: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +49,7 @@ class InsideFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_inside, container, false)
     }
+
     lateinit var adapter : InsideAdap
     lateinit var joinID : String
     lateinit var fireStore : FirebaseFirestore
@@ -67,6 +62,7 @@ class InsideFragment : Fragment() {
         joinID = arguments?.getString("joinID").toString()
         (activity as Dashboard).toolbar.title = sid
 
+
         fireStore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         setUpRV()
@@ -77,6 +73,7 @@ class InsideFragment : Fragment() {
             (activity as Dashboard).num = 2
             val bundle = Bundle().apply {
                 putString("joinID",joinID)
+                putString("SID",sid)
             }
             (activity as Dashboard).joinID = joinID
             (activity as Dashboard).SID = sid.toString()
@@ -92,15 +89,14 @@ class InsideFragment : Fragment() {
             val txt = sendText.text
             if(txt.isNotEmpty()){
                 PushNotification(
-                    NotificationData("hey","naa Koopdala"),
-                    "/Topic"
+                    NotificationData(sid.toString(),txt.toString()),
+                    TOPIC
                 ).also {
                     sendNotification(it)
                 }
                 sendMessage()
                 adjustRV()
             }
-
         }
         (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(true)
 
@@ -134,14 +130,17 @@ class InsideFragment : Fragment() {
     private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
         try{
             val response = RetrofitInstance.api.postNotification(notification)
+
             if(response.isSuccessful){
-                Log.d("Response", Gson().toJson(response))
+                Log.d("Response", "lk"+response.toString())
             }
             else{
-                Log.d("Response",response.errorBody().toString())
+                Log.d("Response","heyy"+ response.raw())
+
             }
         }
         catch(e : Exception){
+            Log.d("Response","kj"+e.message)
             Toast.makeText(activity,e.message,Toast.LENGTH_LONG).show()
         }
 
@@ -169,7 +168,6 @@ class InsideFragment : Fragment() {
 
                     }
                     adapter.differ2.submitList(sb)
-
                 }
             }
 
@@ -191,7 +189,6 @@ class InsideFragment : Fragment() {
 
         fireStore.collection("servers").document(joinID).collection("messages").document().set(message)
             .addOnFailureListener {
-            //TOODO
              }
             .addOnSuccessListener {
                 fireStore.collection("servers").document(joinID).update("createdAt",time)
@@ -206,8 +203,6 @@ class InsideFragment : Fragment() {
         manager.stackFromEnd = true
         chatRV.layoutManager = manager
       chatRV.adapter = adapter
-
-
   }
 
 
@@ -218,22 +213,16 @@ class InsideFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        Log.d("poda","chillman")
-
-//        delayedHide(100)
     }
 
     override fun onPause() {
         super.onPause()
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
         activity?.window?.decorView?.systemUiVisibility = 0
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        fullscreenContent = null
-        fullscreenContentControls = null
     }
 
 

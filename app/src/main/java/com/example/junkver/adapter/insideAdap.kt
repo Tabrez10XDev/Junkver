@@ -15,6 +15,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.chat_from.view.*
 import kotlinx.android.synthetic.main.chat_to.view.*
 import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.abs
 
 
 class InsideAdap : RecyclerView.Adapter<InsideAdap.ToViewHolder>() {
@@ -81,12 +83,23 @@ class InsideAdap : RecyclerView.Adapter<InsideAdap.ToViewHolder>() {
 
     override fun onBindViewHolder(holder: InsideAdap.ToViewHolder, position: Int) {
         val txt = differ2.currentList[position]
+        val formatter = SimpleDateFormat("HH:mm")
+        val dateFormat = SimpleDateFormat("dd:MM:yyyy")
 
+        var time = formatter.format(txt.get("createdAt"))
+        val dat = dateFormat.format(txt.get("createdAt"))
+
+        val date = dateFormat.parse(dat)
+        val currentdat = dateFormat.format(Date())
+        val currentdate = dateFormat.parse(currentdat)
+        val diff: Long = abs(date.time - currentdate.time)
+        var day = diff/(24*60*60*1000)
+        if(day > 1){
+            time = dat
+        }
         when(holder.itemViewType){
             11->{
                 holder.itemView.apply {
-                    val formatter = SimpleDateFormat("HH:mm")
-                    val time = formatter.format(txt.get("createdAt"))
                     chatToTV.text = txt.get("text").toString()
                     chatToName.text = txt.get("username").toString()
                     chatToTime.text = time
@@ -99,8 +112,6 @@ class InsideAdap : RecyclerView.Adapter<InsideAdap.ToViewHolder>() {
             }
             12->{
                 holder.itemView.apply {
-                    val formatter = SimpleDateFormat("HH:mm")
-                    val time = formatter.format(txt.get("createdAt"))
                     chatTV.text = txt.get("text").toString()
                     chatName.text = txt.get("username").toString()
                     chatTime.text = time
