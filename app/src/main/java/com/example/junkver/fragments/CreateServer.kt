@@ -19,17 +19,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.junkver.R
+import com.example.junkver.util.Constants.Companion.topic
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.fragment_create_server.*
 import kotlinx.android.synthetic.main.fragment_f_signup.*
 
 
 class CreateServer : Fragment() {
-
 
 
     override fun onCreateView(
@@ -120,6 +121,8 @@ class CreateServer : Fragment() {
 
         )
         server.set(user).addOnSuccessListener {
+            FirebaseMessaging.getInstance().subscribeToTopic(topic+ref)
+
             Toast.makeText(activity,"Created Successfully",Toast.LENGTH_SHORT).show()
             uploadGroupImage(server)
             findNavController().navigate(R.id.action_createServer_to_existing)
@@ -150,13 +153,7 @@ class CreateServer : Fragment() {
                 }
         }
     }
-    override fun onResume() {
-        super.onResume()
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
-
-//        delayedHide(100)
-    }
 
     private fun showbar(){
         createBar.visibility = View.VISIBLE
@@ -169,29 +166,8 @@ class CreateServer : Fragment() {
         createbutton.isEnabled = true
     }
 
-    override fun onPause() {
-        super.onPause()
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
-        activity?.window?.decorView?.systemUiVisibility = 0
-    }
 
 
 
-
-
-
-
-
-    companion object {
-
-        private const val AUTO_HIDE = true
-
-
-        private const val AUTO_HIDE_DELAY_MILLIS = 3000
-
-
-        private const val UI_ANIMATION_DELAY = 300
-    }
 
 }

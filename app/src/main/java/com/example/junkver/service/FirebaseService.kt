@@ -8,6 +8,9 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.ConnectivityManager
+import android.net.ConnectivityManager.*
+import android.net.NetworkCapabilities.*
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -30,24 +33,26 @@ class FirebaseService :  FirebaseMessagingService() {
 
 
 
-        Log.d("Response","thevaya")
         val intent = Intent(this, Dashboard::class.java)
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val notificationID = Random.nextInt()
+
+            val messages = message?.data
+        Log.d("Response",messages.toString())
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 createNotificationChannel(notificationManager)
             }
                  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
-                val notification = NotificationCompat.Builder(this, "my")
-                    .setContentTitle(message?.data?.get("title"))
+                val notification = NotificationCompat.Builder(this, "myChannel")
+                    .setContentTitle(messages?.get("title"))
                     .setAutoCancel(true)
                     .setSmallIcon(R.drawable.logo1)
                     .setContentIntent(pendingIntent)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setContentText(message?.data?.get("message"))
+                    .setContentText(messages?.get("message"))
                     .build()
 
                 notificationManager.notify(notificationID, notification)
@@ -57,7 +62,7 @@ class FirebaseService :  FirebaseMessagingService() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(notificationManager: NotificationManager){
         val channelName = "channel"
-        val channel = NotificationChannel("my",channelName, IMPORTANCE_HIGH).apply {
+        val channel = NotificationChannel("myChannel",channelName, IMPORTANCE_HIGH).apply {
             description = "description"
             enableLights(true)
             enableVibration(true)
@@ -66,4 +71,7 @@ class FirebaseService :  FirebaseMessagingService() {
 
         notificationManager.createNotificationChannel(channel)
     }
+
+
+
 }

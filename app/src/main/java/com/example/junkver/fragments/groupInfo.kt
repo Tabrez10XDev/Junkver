@@ -135,21 +135,6 @@ class groupInfo : Fragment() {
         groupButton1.isEnabled = true
     }
 
-    override fun onResume() {
-        super.onResume()
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
-    }
-
-    override fun onPause() {
-        super.onPause()
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
-        // Clear the systemUiVisibility flag
-        activity?.window?.decorView?.systemUiVisibility = 0
-    }
-
-
 
 
 

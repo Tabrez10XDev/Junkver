@@ -1,6 +1,8 @@
 package com.example.junkver.app
 
 import android.annotation.SuppressLint
+import android.app.NotificationManager
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -65,6 +67,7 @@ class Dashboard:AppCompatActivity() {
 
 
         FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)
+
 
         var swipe = navView.getHeaderView(0)
         var swipename = swipe.findViewById<TextView>(R.id.swipename)

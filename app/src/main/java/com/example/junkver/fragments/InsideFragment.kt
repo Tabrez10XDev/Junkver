@@ -3,6 +3,9 @@ package com.example.junkver.fragments
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -12,6 +15,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -22,6 +26,7 @@ import com.example.junkver.app.Dashboard
 import com.example.junkver.data.NotificationData
 import com.example.junkver.data.PushNotification
 import com.example.junkver.data.RetrofitInstance
+import com.example.junkver.util.Constants.Companion.topic
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -65,6 +70,8 @@ class InsideFragment : Fragment() {
 
         fireStore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+        val username =  auth.currentUser?.displayName
+
         setUpRV()
 
 
@@ -87,15 +94,23 @@ class InsideFragment : Fragment() {
         sendbutton.setOnClickListener {
 
             val txt = sendText.text
-            if(txt.isNotEmpty()){
+            if(txt.isNotEmpty() and hasInternetConnection()){
                 PushNotification(
-                    NotificationData(sid.toString(),txt.toString()),
-                    TOPIC
+                    NotificationData(
+                        sid.toString(),
+                        txt.toString()
+//                        username.toString()
+                    ),
+                    topic+joinID
+//                        TOPIC
                 ).also {
                     sendNotification(it)
                 }
                 sendMessage()
                 adjustRV()
+            }
+            else if(!hasInternetConnection()){
+                Toast.makeText(activity,"Check your Internet",Toast.LENGTH_SHORT).show()
             }
         }
         (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(true)
@@ -209,22 +224,31 @@ class InsideFragment : Fragment() {
 
 
 
+    private fun hasInternetConnection(): Boolean{
+        val connectivityManager = activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            val activeNetworks = connectivityManager.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(activeNetworks) ?: return false
+            return when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)-> true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)->true
+                else -> false
+            }
+        }
+        else{
+            connectivityManager.activeNetworkInfo?.run {
+                return when(type){
+                    ConnectivityManager.TYPE_WIFI -> true
+                    ConnectivityManager.TYPE_MOBILE ->true
+                    ConnectivityManager.TYPE_ETHERNET ->true
+                    else -> false
+                }
 
-    override fun onResume() {
-        super.onResume()
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+            }
+        }
+        return false
     }
-
-    override fun onPause() {
-        super.onPause()
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        activity?.window?.decorView?.systemUiVisibility = 0
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
 
 
 
