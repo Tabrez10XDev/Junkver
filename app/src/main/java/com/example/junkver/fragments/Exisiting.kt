@@ -41,7 +41,6 @@ class Exisiting : Fragment() {
 
 
         fireStore = FirebaseFirestore.getInstance()
-        val col = fireStore.collection("persons")
         (activity as Dashboard).toolbar.setTitle("Junkver")
 
         setUpRV()
@@ -49,6 +48,7 @@ class Exisiting : Fragment() {
             val bundle = Bundle().apply {
                 putString("SID",it.get("SID").toString())
                 putString("joinID",it.get("joinID").toString())
+                putString("serverUri",it.get("serverUri").toString())
             }
             (activity as Dashboard).num = 1
             findNavController().navigate(R.id.action_existing_to_insideFragment,bundle)

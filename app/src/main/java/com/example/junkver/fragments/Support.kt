@@ -10,6 +10,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.junkver.R
+import com.example.junkver.app.Dashboard
 
 
 class Support : Fragment() {
@@ -28,6 +29,7 @@ class Support : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as Dashboard).num = 3
 
 
 

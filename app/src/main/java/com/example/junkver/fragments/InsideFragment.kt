@@ -64,6 +64,7 @@ class InsideFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val sid = arguments?.getString("SID")
+        val serverUri = arguments?.getString("serverUri")
         joinID = arguments?.getString("joinID").toString()
         (activity as Dashboard).toolbar.title = sid
 
@@ -81,6 +82,7 @@ class InsideFragment : Fragment() {
             val bundle = Bundle().apply {
                 putString("joinID",joinID)
                 putString("SID",sid)
+                putString("serverUri",serverUri)
             }
             (activity as Dashboard).joinID = joinID
             (activity as Dashboard).SID = sid.toString()
@@ -114,6 +116,8 @@ class InsideFragment : Fragment() {
             }
         }
         (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(true)
+        (activity as Dashboard).toolbar?.menu?.findItem(R.id.notificationBtn)?.setVisible(true)
+
 
         (activity as Dashboard).toolbar.setOnMenuItemClickListener {
             when(it.itemId){

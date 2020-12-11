@@ -24,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.dashboard_bar.*
 
 class Dashboard:AppCompatActivity() {
 
@@ -51,8 +52,11 @@ class Dashboard:AppCompatActivity() {
 
 
 
+
         auth = FirebaseAuth.getInstance()
         toolbar.inflateMenu(R.menu.inside_menu)
+        toolbar.menu.findItem(R.id.notificationBtn).setVisible(false)
+        toolbar.menu.findItem(R.id.shareLink).setVisible(false)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
        val navView: NavigationView = findViewById(R.id.nav_view)
 
@@ -68,7 +72,9 @@ class Dashboard:AppCompatActivity() {
 
         FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)
 
-
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
         var swipe = navView.getHeaderView(0)
         var swipename = swipe.findViewById<TextView>(R.id.swipename)
         swipephoto = swipe.findViewById<CircleImageView>(R.id.swipephoto)
@@ -110,6 +116,10 @@ class Dashboard:AppCompatActivity() {
             else {
                 if(num == 1) {
                     findNavController(R.id.nav_host_fragment).navigate(R.id.action_insideFragment_to_existing)
+                    toolbar.menu.findItem(R.id.notificationBtn).setVisible(false)
+                    toolbar.menu.findItem(R.id.shareLink).setVisible(false)
+                    num -=1
+
                 }
                 else if (num ==2){
                     val bundle = Bundle().apply {
@@ -117,8 +127,15 @@ class Dashboard:AppCompatActivity() {
                         putString("SID",SID)
                     }
                     findNavController(R.id.nav_host_fragment).navigate(R.id.action_groupInfo_to_insideFragment,bundle)
-                }
                     num -=1
+
+                }
+                else{
+                    super.onBackPressed()
+                    num = 0
+
+                }
+
             }
 
         }
@@ -165,6 +182,7 @@ class Dashboard:AppCompatActivity() {
         }
 
     }
+
 
 
 

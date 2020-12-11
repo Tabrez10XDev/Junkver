@@ -34,6 +34,7 @@ class ChangePass : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         hidebar()
 
+        (activity as Dashboard).num = 3
 
         auth = FirebaseAuth.getInstance()
 

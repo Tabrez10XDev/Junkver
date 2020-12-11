@@ -53,6 +53,7 @@ class Profile : Fragment() {
 
         fireStore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+        (activity as Dashboard).num = 3
 
         selecturi = (activity as Dashboard).selectUri
         hidebar()

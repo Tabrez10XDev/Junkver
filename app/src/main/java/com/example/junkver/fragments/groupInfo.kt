@@ -16,9 +16,11 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.junkver.R
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.android.synthetic.main.chatlist_ui.view.*
 import kotlinx.android.synthetic.main.fragment_f_signup.*
 import kotlinx.android.synthetic.main.fragment_group_info.*
 import kotlinx.android.synthetic.main.fragment_server.*
@@ -61,6 +63,9 @@ class groupInfo : Fragment() {
         }
         joinID = arguments?.getString("joinID").toString()
         val sid = arguments?.getString("SID").toString()
+        val serverUri = Uri.parse(arguments?.getString("serverUri").toString())
+        Glide.with(this).load(serverUri).into(groupLogo1)
+
         groupTV1.setText(sid)
 
         groupButton1.setOnClickListener {
