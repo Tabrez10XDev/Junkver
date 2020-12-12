@@ -120,9 +120,14 @@ class CreateServer : Fragment() {
             "serverUri" to ""
 
         )
+        val sharedPref = activity?.getSharedPreferences("notificationPref",Context.MODE_PRIVATE)
+
         server.set(user).addOnSuccessListener {
             FirebaseMessaging.getInstance().subscribeToTopic(topic+ref)
-
+            with(sharedPref?.edit()){
+                this?.putInt(ref,1)
+                this?.apply()
+            }
             Toast.makeText(activity,"Created Successfully",Toast.LENGTH_SHORT).show()
             uploadGroupImage(server)
             findNavController().navigate(R.id.action_createServer_to_existing)

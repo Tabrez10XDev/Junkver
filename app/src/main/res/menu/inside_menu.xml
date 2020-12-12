@@ -6,9 +6,9 @@
         android:icon="@drawable/share_foreground"
         app:showAsAction="always"/>
 
-    <item android:id="@+id/notificationBtn"
-        android:title="Notifications"
-        app:showAsAction="always"
-        app:actionViewClass="android.widget.Switch" />
+    <item android:id="@+id/notify"
+        android:title="notifi"
+        android:icon="@drawable/ic_baseline_notifications_off_24"
+        app:showAsAction="always"/>
 
 </menu>

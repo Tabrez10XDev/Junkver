@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,6 +64,7 @@ class groupInfo : Fragment() {
         }
         joinID = arguments?.getString("joinID").toString()
         val sid = arguments?.getString("SID").toString()
+        Log.d("Response","helpppp"+sid)
         val serverUri = Uri.parse(arguments?.getString("serverUri").toString())
         Glide.with(this).load(serverUri).into(groupLogo1)
 
@@ -141,6 +143,11 @@ class groupInfo : Fragment() {
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        val serverUri = Uri.parse(arguments?.getString("serverUri").toString())
+        Glide.with(this).load(serverUri).into(groupLogo1)
+    }
 
 
 }

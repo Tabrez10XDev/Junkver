@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.fragment_server.*
 class Server : Fragment() {
 
 
+    val sharedPref = activity?.getSharedPreferences("notificationPref",Context.MODE_PRIVATE)
 
     lateinit var fireStore : FirebaseFirestore
     lateinit var auth : FirebaseAuth
@@ -46,6 +47,7 @@ class Server : Fragment() {
         hidebar()
         fireStore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+
         joinFAB.setOnClickListener {
             findNavController().navigate(R.id.action_server_to_createServer)
         }
@@ -102,6 +104,10 @@ class Server : Fragment() {
                 fireStore.collection("servers").document(servername).update("Admin", admins)
                     .addOnSuccessListener {
                         FirebaseMessaging.getInstance().subscribeToTopic(Constants.topic+servername)
+                        with(sharedPref?.edit()){
+                            this?.putInt(servername,1)
+                            this?.apply()
+                        }
 
                         hidebar()
                         fireStore.collection("servers").document(servername)

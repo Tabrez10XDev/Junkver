@@ -48,6 +48,7 @@ class Dashboard:AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        Log.d("finalI","oncreate")
         fireStore = FirebaseFirestore.getInstance()
 
 
@@ -55,7 +56,7 @@ class Dashboard:AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         toolbar.inflateMenu(R.menu.inside_menu)
-        toolbar.menu.findItem(R.id.notificationBtn).setVisible(false)
+        toolbar.menu.findItem(R.id.notify).setVisible(false)
         toolbar.menu.findItem(R.id.shareLink).setVisible(false)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
        val navView: NavigationView = findViewById(R.id.nav_view)
@@ -95,6 +96,11 @@ class Dashboard:AppCompatActivity() {
         super.overridePendingTransition(enterAnim, R.anim.slide_out_left)
     }
 
+    override fun onResume() {
+        Log.d("finalI","onresume")
+        super.onResume()
+    }
+
     private var doubleBack : Boolean = false
     override fun onBackPressed() {
         if(num==0){
@@ -116,7 +122,7 @@ class Dashboard:AppCompatActivity() {
             else {
                 if(num == 1) {
                     findNavController(R.id.nav_host_fragment).navigate(R.id.action_insideFragment_to_existing)
-                    toolbar.menu.findItem(R.id.notificationBtn).setVisible(false)
+                    toolbar.menu.findItem(R.id.notify).setVisible(false)
                     toolbar.menu.findItem(R.id.shareLink).setVisible(false)
                     num -=1
 

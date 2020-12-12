@@ -3,6 +3,7 @@ package com.example.junkver.fragments
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -26,11 +27,13 @@ import com.example.junkver.app.Dashboard
 import com.example.junkver.data.NotificationData
 import com.example.junkver.data.PushNotification
 import com.example.junkver.data.RetrofitInstance
+import com.example.junkver.util.Constants
 import com.example.junkver.util.Constants.Companion.topic
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.squareup.okhttp.Dispatcher
 import kotlinx.android.synthetic.main.dashboard_bar.*
@@ -38,6 +41,7 @@ import kotlinx.android.synthetic.main.fragment_inside.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.internal.notify
 
 const val TOPIC = "/topics/myTopic"
 
@@ -55,6 +59,7 @@ class InsideFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_inside, container, false)
     }
 
+
     lateinit var adapter : InsideAdap
     lateinit var joinID : String
     lateinit var fireStore : FirebaseFirestore
@@ -69,11 +74,24 @@ class InsideFragment : Fragment() {
         (activity as Dashboard).toolbar.title = sid
 
 
+    val sharedPref = activity?.getSharedPreferences("notificationPref",Context.MODE_PRIVATE)
+
         fireStore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         val username =  auth.currentUser?.displayName
 
         setUpRV()
+
+        (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(true)
+        (activity as Dashboard).toolbar?.menu?.findItem(R.id.notify)?.setVisible(true)
+        var pref = sharedPref?.getInt(joinID,1)
+
+        Log.d("Response","initial"+pref.toString())
+
+
+
+        pref?.let { modityNotifications(it) }
+
 
 
 
@@ -100,8 +118,9 @@ class InsideFragment : Fragment() {
                 PushNotification(
                     NotificationData(
                         sid.toString(),
-                        txt.toString()
-//                        username.toString()
+                        txt.toString(),
+                        username.toString(),
+                        joinID
                     ),
                     topic+joinID
 //                        TOPIC
@@ -115,8 +134,6 @@ class InsideFragment : Fragment() {
                 Toast.makeText(activity,"Check your Internet",Toast.LENGTH_SHORT).show()
             }
         }
-        (activity as Dashboard).toolbar?.menu?.findItem(R.id.shareLink)?.setVisible(true)
-        (activity as Dashboard).toolbar?.menu?.findItem(R.id.notificationBtn)?.setVisible(true)
 
 
         (activity as Dashboard).toolbar.setOnMenuItemClickListener {
@@ -125,7 +142,41 @@ class InsideFragment : Fragment() {
                     var clipboard = (activity as Dashboard).getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     var clip = ClipData.newPlainText("label",joinID)
                     clipboard.setPrimaryClip(clip)
-                    Toast.makeText(activity,"Server ID copied in your clipboard, paste it in JoinID",Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity,"Server ID copied to your clipboard, paste it in JoinID",Toast.LENGTH_LONG).show()
+                    return@setOnMenuItemClickListener true
+                }
+                R.id.notify->{
+                    if(pref!= null){
+                        Log.d("Response","if")
+
+                        if(pref == 1) {
+                            Toast.makeText(activity, "Turned off notifications", Toast.LENGTH_SHORT).show()
+                            pref = 0
+                            with(sharedPref?.edit()){
+                                this?.putInt(joinID,0)
+                                this?.apply()
+                            }
+                            modityNotifications(pref!!)
+                        }
+                        else{
+                            Toast.makeText(activity, "Turned on notifications", Toast.LENGTH_SHORT).show()
+                            pref = 1
+                            with(sharedPref?.edit()){
+                                this?.putInt(joinID,1)
+                                this?.apply()
+                            }
+                            modityNotifications(pref!!)
+                        }
+                    }
+                    else{
+                        Log.d("Response","else")
+
+                        with(sharedPref?.edit()){
+                            this?.putInt(joinID,1)
+                            this?.apply()
+                        }
+                    }
+
                     return@setOnMenuItemClickListener true
                 }
                 else->{
@@ -174,6 +225,7 @@ class InsideFragment : Fragment() {
     private fun subscribeToChannel(){
 
         val channel = fireStore.collection("servers").document(joinID).collection("messages")
+        val sharedPref = activity?.getSharedPreferences("notificationPref",Context.MODE_PRIVATE)
 
                 channel.orderBy("createdAt",Query.Direction.ASCENDING).addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
@@ -188,7 +240,10 @@ class InsideFragment : Fragment() {
                     }
                     adapter.differ2.submitList(sb)
                 }
-            }
+                    val currentID = sharedPref?.getString("currentID","")
+                    if(currentID != ""){
+                    adjustRV()
+            }   }
 
 
 
@@ -224,9 +279,44 @@ class InsideFragment : Fragment() {
       chatRV.adapter = adapter
   }
 
+    override fun onPause() {
+        super.onPause()
+        val sharedPref = activity?.getSharedPreferences("notificationPref",Context.MODE_PRIVATE)
+        with(sharedPref?.edit()){
+            this?.putString("currentID","")
+            this?.apply()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val sharedPref = activity?.getSharedPreferences("notificationPref",Context.MODE_PRIVATE)
+        with(sharedPref?.edit()){
+            this?.putString("currentID",arguments?.getString("joinID").toString())
+            this?.apply()
+        }
+    }
 
 
 
+
+    private fun modityNotifications(pref : Int){
+        if(pref != null) {
+            val notify = (activity as Dashboard).toolbar.menu.findItem(R.id.notify)
+
+            if (pref == 1) {
+                FirebaseMessaging.getInstance().subscribeToTopic(Constants.topic + joinID)
+                notify.setIcon(R.drawable.ic_baseline_notifications_active_24)
+
+            } else {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(topic + joinID)
+                notify.setIcon(R.drawable.ic_baseline_notifications_off_24)
+
+
+
+            }
+        }
+    }
 
     private fun hasInternetConnection(): Boolean{
         val connectivityManager = activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
