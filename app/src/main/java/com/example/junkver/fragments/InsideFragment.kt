@@ -323,7 +323,6 @@ class InsideFragment : Fragment() {
                 notify.setIcon(R.drawable.ic_baseline_notifications_active_24)
 
             } else {
-                FirebaseMessaging.getInstance().unsubscribeFromTopic(topic + joinID)
                 notify.setIcon(R.drawable.ic_baseline_notifications_off_24)
 
 

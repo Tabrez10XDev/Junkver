@@ -37,6 +37,7 @@ class FirebaseService :  FirebaseMessagingService() {
 
         val username = auth.currentUser?.displayName
         val currentID = sharedPref.getString("currentID","")
+        val notificationPref = sharedPref.getInt( messages?.get("fromServer"),1)
         Log.d("PLEASE",messages?.get("fromServer").toString())
         if (messages?.get("body") != username && messages?.get("fromServer") != currentID) {
             val old =  unseenPref.getInt(messages?.get("fromServer").toString(),0)
@@ -46,6 +47,7 @@ class FirebaseService :  FirebaseMessagingService() {
                     this?.apply()
                 }
             }
+            if(notificationPref == 1) {
             val intent = Intent(this, Dashboard::class.java)
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -69,7 +71,7 @@ class FirebaseService :  FirebaseMessagingService() {
                 .build()
 
             notificationManager.notify(notificationID , notification)
-        }
+        } }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
