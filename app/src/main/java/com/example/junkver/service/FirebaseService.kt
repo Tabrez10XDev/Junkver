@@ -29,28 +29,36 @@ class FirebaseService :  FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage?) {
         super.onMessageReceived(message)
         Log.d("POCHA","BEGIN")
-        val sharedPref = getSharedPreferences("notificationPref",Context.MODE_PRIVATE)
-
         val messages = message?.data
+
+        val sharedPref = getSharedPreferences("notificationPref",Context.MODE_PRIVATE)
+        val unseenPref = getSharedPreferences("unseenPref",Context.MODE_PRIVATE)
+
+
         val username = auth.currentUser?.displayName
         val currentID = sharedPref.getString("currentID","")
         Log.d("PLEASE",messages?.get("fromServer").toString())
         if (messages?.get("body") != username && messages?.get("fromServer") != currentID) {
-
+            val old =  unseenPref.getInt(messages?.get("fromServer").toString(),0)
+            if(old < 10){
+                with(unseenPref?.edit()){
+                    this?.putInt(messages?.get("fromServer").toString(),old+1)
+                    this?.apply()
+                }
+            }
             val intent = Intent(this, Dashboard::class.java)
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//            val notificationID = Random.nextInt()
+            val notificationID = Random.nextInt()
 
-            val channelID = messages?.get("fromServer").toString()
+//            val channelID = messages?.get("fromServer").toString()
             Log.d("Response", messages.toString())
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 createNotificationChannel(notificationManager)
             }
             Log.d("POCHA","poda dei")
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
+             val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
             val notification = NotificationCompat.Builder(this, "Main")
                 .setContentTitle(messages?.get("title"))
                 .setAutoCancel(true)
@@ -60,7 +68,7 @@ class FirebaseService :  FirebaseMessagingService() {
                 .setContentText(messages?.get("body") + ": " + messages?.get("message"))
                 .build()
 
-            notificationManager.notify(channelID.hashCode(), notification)
+            notificationManager.notify(notificationID , notification)
         }
     }
 

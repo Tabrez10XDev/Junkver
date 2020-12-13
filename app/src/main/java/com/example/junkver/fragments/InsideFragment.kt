@@ -223,6 +223,7 @@ class InsideFragment : Fragment() {
         },100)
     }
 
+
     private fun subscribeToChannel(){
 
         val channel = fireStore.collection("servers").document(joinID).collection("messages")
@@ -296,8 +297,14 @@ class InsideFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         val sharedPref = activity?.getSharedPreferences("notificationPref",Context.MODE_PRIVATE)
+        val unseenPref = activity?.getSharedPreferences("unseenPref",Context.MODE_PRIVATE)
+        val joinID = arguments?.getString("joinID").toString()
         with(sharedPref?.edit()){
-            this?.putString("currentID",arguments?.getString("joinID").toString())
+            this?.putString("currentID",joinID)
+            this?.apply()
+        }
+        with(unseenPref?.edit()){
+            this?.putInt(joinID,0)
             this?.apply()
         }
     }

@@ -1,5 +1,6 @@
 package com.example.junkver.adapter
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -58,7 +59,20 @@ return oldItem == newItem
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
         val article = differ.currentList[position]
+
+
         holder.itemView.apply {
+            val unseenPref =context.getSharedPreferences("unseenPref", Context.MODE_PRIVATE)
+            val current = unseenPref.getInt(article.get("joinID").toString(),0)
+            if(current == 0){
+                unseenTV.text = ""
+            }
+            else if(current < 10){
+                unseenTV.text = current.toString()
+            }
+            else if(current > 9){
+                unseenTV.text = "9+"
+            }
 
             setOnClickListener {
                 onItemClickListener?.let { it(article) }
@@ -72,6 +86,7 @@ return oldItem == newItem
             val currentdate = dateFormat.parse(currentdat)
             chatlisthead.text = article.get("SID").toString()
             chatlistText.text = article.get("Last").toString()
+
             val photoUri = Uri.parse(article.get("serverUri").toString())
             Log.d("photo",photoUri.toString())
             Glide.with(this).load(photoUri).into(chatlistphoto)
