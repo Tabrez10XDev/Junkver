@@ -28,6 +28,7 @@ class FirebaseService :  FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage?) {
         super.onMessageReceived(message)
+        Log.d("POCHA","BEGIN")
         val sharedPref = getSharedPreferences("notificationPref",Context.MODE_PRIVATE)
 
         val messages = message?.data
@@ -39,18 +40,18 @@ class FirebaseService :  FirebaseMessagingService() {
             val intent = Intent(this, Dashboard::class.java)
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val notificationID = Random.nextInt()
+//            val notificationID = Random.nextInt()
 
             val channelID = messages?.get("fromServer").toString()
             Log.d("Response", messages.toString())
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel(notificationManager,channelID)
+                createNotificationChannel(notificationManager)
             }
             Log.d("POCHA","poda dei")
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
-            val notification = NotificationCompat.Builder(this, channelID)
+            val notification = NotificationCompat.Builder(this, "Main")
                 .setContentTitle(messages?.get("title"))
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.logo1)
@@ -59,14 +60,14 @@ class FirebaseService :  FirebaseMessagingService() {
                 .setContentText(messages?.get("body") + ": " + messages?.get("message"))
                 .build()
 
-            notificationManager.notify(notificationID, notification)
+            notificationManager.notify(channelID.hashCode(), notification)
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel(notificationManager: NotificationManager, channelID : String){
+    private fun createNotificationChannel(notificationManager: NotificationManager){
         val channelName = "Junkver"
-        val channel = NotificationChannel(channelID,channelName, IMPORTANCE_DEFAULT).apply {
+        val channel = NotificationChannel("Main",channelName, IMPORTANCE_HIGH).apply {
             description = "MainChannel"
             enableLights(true)
             enableVibration(true)

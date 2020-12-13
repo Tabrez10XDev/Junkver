@@ -217,6 +217,7 @@ class InsideFragment : Fragment() {
     }
 
     private fun adjustRV(){
+        Log.d("adjust","adjusting")
         chatRV.postDelayed(Runnable {
             chatRV.scrollToPosition(chatRV.adapter!!.itemCount - 1)
         },100)
@@ -231,17 +232,21 @@ class InsideFragment : Fragment() {
                 firebaseFirestoreException?.let {
                     return@addSnapshotListener
                 }
-                querySnapshot?.let {documents->
+                    var final : Map<String,Any> ?= null
+
+                    querySnapshot?.let {documents->
                     val sb : MutableList<Map<String,Any>> = arrayListOf()
 
                     for(document in documents) {
                         sb.add(document.data)
+                        final = document.data
 
                     }
                     adapter.differ2.submitList(sb)
                 }
+                    var person = final?.get("username")
                     val currentID = sharedPref?.getString("currentID","")
-                    if(currentID != ""){
+                    if(currentID != "" && person != auth.currentUser?.displayName){
                     adjustRV()
             }   }
 
@@ -266,7 +271,7 @@ class InsideFragment : Fragment() {
              }
             .addOnSuccessListener {
                 fireStore.collection("servers").document(joinID).update("createdAt",time)
-                fireStore.collection("servers").document(joinID).update("Last",txt)
+                fireStore.collection("servers").document(joinID).update("Last",auth.currentUser?.displayName + ": "+txt)
 
             }
     }
@@ -305,7 +310,9 @@ class InsideFragment : Fragment() {
             val notify = (activity as Dashboard).toolbar.menu.findItem(R.id.notify)
 
             if (pref == 1) {
-                FirebaseMessaging.getInstance().subscribeToTopic(Constants.topic + joinID)
+                FirebaseMessaging.getInstance().subscribeToTopic(Constants.topic + joinID).addOnSuccessListener {
+                    Log.d("Response","OSTHI")
+                }
                 notify.setIcon(R.drawable.ic_baseline_notifications_active_24)
 
             } else {
